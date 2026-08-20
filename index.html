@@ -1,0 +1,225 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>倒數日</title>
+<style>
+:root{
+  --bg:#f7f5fb;--card:#fff;--text:#211d2c;--muted:#8b8498;
+  --p1:#7b68ee;--p2:#a995ff;--line:#ece8f2;--danger:#ef6678;
+  --shadow:0 14px 35px rgba(73,57,119,.12)
+}
+body.dark{
+  --bg:#14121a;--card:#201d29;--text:#f7f4ff;--muted:#aaa4b7;
+  --p1:#9b8cff;--p2:#7567d8;--line:#332f3d;--shadow:0 14px 35px rgba(0,0,0,.28)
+}
+*{box-sizing:border-box}
+body{
+  margin:0;background:radial-gradient(circle at top right,rgba(169,149,255,.22),transparent 26%),var(--bg);
+  color:var(--text);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang TC","Noto Sans TC",sans-serif;
+  min-height:100vh;transition:.25s
+}
+.app{max-width:720px;margin:auto;padding:22px 18px 110px}
+.header{display:flex;justify-content:space-between;align-items:center;margin-bottom:18px}
+h1{font-size:30px;margin:0}.sub{color:var(--muted);font-size:14px;margin-top:4px}
+.icon{width:44px;height:44px;border:0;border-radius:15px;background:var(--card);box-shadow:var(--shadow);font-size:20px;cursor:pointer}
+.hero{
+  border-radius:28px;padding:22px;color:#fff;background:linear-gradient(135deg,var(--p1),var(--p2));
+  box-shadow:0 18px 40px rgba(123,104,238,.27)
+}
+.hero small{opacity:.85}.hero h2{font-size:23px;margin:7px 0 4px}
+.hero .date{opacity:.87;font-size:13px}
+.units{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-top:16px}
+.unit{padding:11px 5px;text-align:center;border-radius:16px;background:rgba(255,255,255,.16);border:1px solid rgba(255,255,255,.15)}
+.unit b{font-size:21px;display:block}.unit span{font-size:11px;opacity:.85}
+.sec{display:flex;justify-content:space-between;align-items:center;margin:24px 2px 12px}
+.sec h3{margin:0}.count{font-size:13px;color:var(--muted)}
+.list{display:grid;gap:12px}
+.card{
+  display:grid;grid-template-columns:1fr auto;gap:10px;align-items:center;
+  background:var(--card);border:1px solid var(--line);border-radius:21px;padding:17px;box-shadow:var(--shadow)
+}
+.title{font-weight:800;font-size:16px}.meta{font-size:12px;color:var(--muted);margin:5px 0 9px}
+.pills{display:flex;gap:6px;flex-wrap:wrap}
+.pill{background:rgba(123,104,238,.11);color:var(--p1);padding:6px 9px;border-radius:999px;font-weight:800;font-size:12px}
+.pill.done{color:var(--danger);background:rgba(239,102,120,.12)}
+.more{border:0;background:transparent;color:var(--muted);font-size:20px;cursor:pointer}
+.empty{text-align:center;padding:34px 20px;border:1px dashed var(--line);border-radius:21px;color:var(--muted);background:var(--card)}
+.fab{
+  position:fixed;left:50%;transform:translateX(-50%);bottom:max(22px,env(safe-area-inset-bottom));
+  width:min(684px,calc(100% - 36px));border:0;border-radius:20px;padding:16px;
+  color:#fff;font-weight:800;font-size:16px;background:linear-gradient(135deg,var(--p1),var(--p2));
+  box-shadow:0 16px 36px rgba(123,104,238,.3);cursor:pointer
+}
+.backdrop{display:none;position:fixed;inset:0;background:rgba(10,8,14,.48);backdrop-filter:blur(6px);z-index:10;align-items:flex-end;justify-content:center;padding:12px}
+.backdrop.show{display:flex}
+.sheet{width:min(720px,100%);max-height:90vh;overflow:auto;background:var(--card);border-radius:28px 28px 22px 22px;padding:20px}
+.sheethead{display:flex;align-items:center;justify-content:space-between;margin-bottom:15px}
+.sheethead h3{margin:0}.close{width:38px;height:38px;border:0;border-radius:12px;background:var(--bg);color:var(--text);font-size:18px}
+.form{display:grid;gap:14px}label{font-size:13px;font-weight:700;color:var(--muted)}
+input,textarea{
+  width:100%;margin-top:7px;padding:14px;border:1px solid var(--line);border-radius:16px;
+  background:var(--bg);color:var(--text);font:inherit;outline:none
+}
+textarea{min-height:74px;resize:vertical}.row{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.actions{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.btn{border:0;border-radius:16px;padding:14px;font-weight:800;cursor:pointer}
+.secondary{background:var(--bg);color:var(--text);border:1px solid var(--line)}
+.primary{background:var(--p1);color:#fff}
+.toast{
+  position:fixed;top:18px;left:50%;transform:translate(-50%,-16px);opacity:0;pointer-events:none;
+  background:var(--text);color:var(--card);padding:10px 15px;border-radius:999px;font-size:13px;transition:.25s;z-index:30
+}
+.toast.show{opacity:1;transform:translate(-50%,0)}
+@media(max-width:520px){h1{font-size:27px}.row{grid-template-columns:1fr}.hero{border-radius:24px}}
+</style>
+</head>
+<body>
+<div class="app">
+  <div class="header">
+    <div><h1>倒數日 ⏳</h1><div class="sub">把重要的日子留在眼前</div></div>
+    <button class="icon" id="themeBtn">🌙</button>
+  </div>
+
+  <section class="hero">
+    <small>最近的倒數</small>
+    <h2 id="heroTitle">還沒有倒數</h2>
+    <div class="date" id="heroDate">新增第一個重要日子吧</div>
+    <div class="units" id="heroUnits">
+      <div class="unit"><b>0</b><span>天</span></div>
+      <div class="unit"><b>0</b><span>時</span></div>
+      <div class="unit"><b>0</b><span>分</span></div>
+      <div class="unit"><b>0</b><span>秒</span></div>
+    </div>
+  </section>
+
+  <div class="sec"><h3>我的倒數</h3><div class="count" id="count"></div></div>
+  <div class="list" id="list"></div>
+</div>
+
+<button class="fab" id="add">＋ 新增倒數</button>
+
+<div class="backdrop" id="modal">
+  <div class="sheet">
+    <div class="sheethead">
+      <h3 id="modalTitle">新增倒數</h3>
+      <button class="close" id="close">✕</button>
+    </div>
+    <form id="form" class="form">
+      <label>名稱
+        <input id="title" maxlength="40" placeholder="例如：生日、旅行、發薪日" required>
+      </label>
+      <div class="row">
+        <label>日期<input id="date" type="date" required></label>
+        <label>時間<input id="time" type="time" required></label>
+      </div>
+      <label>備註（選填）
+        <textarea id="note" maxlength="120" placeholder="寫下一句提醒"></textarea>
+      </label>
+      <div class="actions">
+        <button class="btn secondary" type="button" id="cancel">取消</button>
+        <button class="btn primary" type="submit">儲存</button>
+      </div>
+    </form>
+  </div>
+</div>
+<div class="toast" id="toast"></div>
+
+<script>
+const KEY='countdown_events_v1', THEME='countdown_theme_v1';
+let events=JSON.parse(localStorage.getItem(KEY)||'[]'), editId=null;
+const $=s=>document.querySelector(s);
+
+function save(){localStorage.setItem(KEY,JSON.stringify(events))}
+function showToast(t){const e=$('#toast');e.textContent=t;e.classList.add('show');setTimeout(()=>e.classList.remove('show'),1600)}
+function pad(n){return String(n).padStart(2,'0')}
+function diffParts(ts){
+  let d=ts-Date.now(), done=d<=0; d=Math.max(0,d);
+  const days=Math.floor(d/86400000); d%=86400000;
+  const hrs=Math.floor(d/3600000); d%=3600000;
+  const mins=Math.floor(d/60000); d%=60000;
+  const secs=Math.floor(d/1000);
+  return {done,days,hrs,mins,secs};
+}
+function fmtDate(ts){
+  return new Intl.DateTimeFormat('zh-TW',{year:'numeric',month:'long',day:'numeric',weekday:'short',hour:'2-digit',minute:'2-digit'}).format(new Date(ts));
+}
+function render(){
+  events.sort((a,b)=>a.ts-b.ts);
+  $('#count').textContent=events.length+' 個';
+  const list=$('#list');
+  if(!events.length){
+    list.innerHTML='<div class="empty">目前沒有倒數項目<br>按下方按鈕新增第一個吧 ✨</div>';
+  }else{
+    list.innerHTML=events.map(e=>{
+      const p=diffParts(e.ts);
+      const pills=p.done
+        ? '<span class="pill done">已到期</span>'
+        : `<span class="pill">${p.days} 天</span><span class="pill">${pad(p.hrs)} 時</span><span class="pill">${pad(p.mins)} 分</span><span class="pill">${pad(p.secs)} 秒</span>`;
+      return `<div class="card">
+        <div>
+          <div class="title">${escapeHtml(e.title)}</div>
+          <div class="meta">${fmtDate(e.ts)}${e.note?' · '+escapeHtml(e.note):''}</div>
+          <div class="pills">${pills}</div>
+        </div>
+        <button class="more" onclick="openMenu('${e.id}')">⋯</button>
+      </div>`;
+    }).join('');
+  }
+  const next=events.find(e=>e.ts>Date.now());
+  if(next){
+    const p=diffParts(next.ts);
+    $('#heroTitle').textContent=next.title;
+    $('#heroDate').textContent=fmtDate(next.ts);
+    $('#heroUnits').innerHTML=[
+      ['天',p.days],['時',pad(p.hrs)],['分',pad(p.mins)],['秒',pad(p.secs)]
+    ].map(x=>`<div class="unit"><b>${x[1]}</b><span>${x[0]}</span></div>`).join('');
+  }else{
+    $('#heroTitle').textContent=events.length?'目前沒有進行中的倒數':'還沒有倒數';
+    $('#heroDate').textContent=events.length?'可以新增下一個重要日子':'新增第一個重要日子吧';
+    $('#heroUnits').innerHTML=['天','時','分','秒'].map(x=>`<div class="unit"><b>0</b><span>${x}</span></div>`).join('');
+  }
+}
+function escapeHtml(s){return String(s).replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]))}
+function openModal(e=null){
+  editId=e?.id||null;
+  $('#modalTitle').textContent=e?'編輯倒數':'新增倒數';
+  $('#title').value=e?.title||'';
+  $('#note').value=e?.note||'';
+  const dt=e?new Date(e.ts):new Date(Date.now()+3600000);
+  $('#date').value=`${dt.getFullYear()}-${pad(dt.getMonth()+1)}-${pad(dt.getDate())}`;
+  $('#time').value=`${pad(dt.getHours())}:${pad(dt.getMinutes())}`;
+  $('#modal').classList.add('show');
+}
+function closeModal(){ $('#modal').classList.remove('show'); editId=null; }
+window.openMenu=function(id){
+  const e=events.find(x=>x.id===id); if(!e)return;
+  const action=prompt(`「${e.title}」\n輸入 1 編輯\n輸入 2 刪除`);
+  if(action==='1') openModal(e);
+  if(action==='2' && confirm(`確定刪除「${e.title}」？`)){events=events.filter(x=>x.id!==id);save();render();showToast('已刪除')}
+}
+$('#add').onclick=()=>openModal();
+$('#close').onclick=closeModal; $('#cancel').onclick=closeModal;
+$('#modal').onclick=e=>{if(e.target.id==='modal') closeModal()};
+$('#form').onsubmit=e=>{
+  e.preventDefault();
+  const ts=new Date($('#date').value+'T'+$('#time').value).getTime();
+  if(!Number.isFinite(ts)) return;
+  const item={id:editId||crypto.randomUUID(),title:$('#title').value.trim(),note:$('#note').value.trim(),ts};
+  if(editId) events=events.map(x=>x.id===editId?item:x); else events.push(item);
+  save();closeModal();render();showToast(editId?'已更新':'已新增');
+}
+if(localStorage.getItem(THEME)==='dark') document.body.classList.add('dark');
+function syncThemeIcon(){themeBtn.textContent=document.body.classList.contains('dark')?'☀️':'🌙'}
+const themeBtn=$('#themeBtn'); syncThemeIcon();
+themeBtn.onclick=()=>{
+  document.body.classList.toggle('dark');
+  localStorage.setItem(THEME,document.body.classList.contains('dark')?'dark':'light');
+  syncThemeIcon();
+}
+render();
+setInterval(render,1000);
+</script>
+</body>
+</html>
