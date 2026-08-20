@@ -2,224 +2,295 @@
 <html lang="zh-Hant">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<title>倒數日</title>
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#7b68ee">
+<title>倒數計時＋還錢計畫</title>
+<link rel="manifest" href="manifest.json">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="倒數計時">
 <style>
 :root{
   --bg:#f7f5fb;--card:#fff;--text:#211d2c;--muted:#8b8498;
-  --p1:#7b68ee;--p2:#a995ff;--line:#ece8f2;--danger:#ef6678;
-  --shadow:0 14px 35px rgba(73,57,119,.12)
+  --p1:#7b68ee;--p2:#aa98ff;--line:#ece8f2;--danger:#ef6678;
+  --green:#35b874;--orange:#f0a13a;--shadow:0 14px 35px rgba(73,57,119,.12)
 }
 body.dark{
   --bg:#14121a;--card:#201d29;--text:#f7f4ff;--muted:#aaa4b7;
   --p1:#9b8cff;--p2:#7567d8;--line:#332f3d;--shadow:0 14px 35px rgba(0,0,0,.28)
 }
 *{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
 body{
   margin:0;background:radial-gradient(circle at top right,rgba(169,149,255,.22),transparent 26%),var(--bg);
   color:var(--text);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang TC","Noto Sans TC",sans-serif;
   min-height:100vh;transition:.25s
 }
-.app{max-width:720px;margin:auto;padding:22px 18px 110px}
-.header{display:flex;justify-content:space-between;align-items:center;margin-bottom:18px}
-h1{font-size:30px;margin:0}.sub{color:var(--muted);font-size:14px;margin-top:4px}
-.icon{width:44px;height:44px;border:0;border-radius:15px;background:var(--card);box-shadow:var(--shadow);font-size:20px;cursor:pointer}
-.hero{
-  border-radius:28px;padding:22px;color:#fff;background:linear-gradient(135deg,var(--p1),var(--p2));
-  box-shadow:0 18px 40px rgba(123,104,238,.27)
-}
-.hero small{opacity:.85}.hero h2{font-size:23px;margin:7px 0 4px}
-.hero .date{opacity:.87;font-size:13px}
-.units{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-top:16px}
-.unit{padding:11px 5px;text-align:center;border-radius:16px;background:rgba(255,255,255,.16);border:1px solid rgba(255,255,255,.15)}
-.unit b{font-size:21px;display:block}.unit span{font-size:11px;opacity:.85}
-.sec{display:flex;justify-content:space-between;align-items:center;margin:24px 2px 12px}
-.sec h3{margin:0}.count{font-size:13px;color:var(--muted)}
+button,input,textarea,select{font-family:inherit}
+.app{max-width:760px;margin:auto;padding:20px 16px 110px}
+.header{display:flex;justify-content:space-between;align-items:center;margin-bottom:14px}
+.brand{display:flex;align-items:center;gap:12px}
+.brand img{width:48px;height:48px;border-radius:14px;box-shadow:var(--shadow)}
+h1{font-size:27px;margin:0}.sub{color:var(--muted);font-size:13px;margin-top:3px}
+.icon{width:44px;height:44px;border:0;border-radius:15px;background:var(--card);box-shadow:var(--shadow);font-size:20px;color:var(--text)}
+.tabs{display:grid;grid-template-columns:1fr 1fr;gap:8px;background:var(--card);padding:6px;border:1px solid var(--line);border-radius:17px;margin-bottom:16px}
+.tab{border:0;background:transparent;color:var(--muted);padding:10px;border-radius:12px;font-weight:800;font-size:14px}
+.tab.active{background:linear-gradient(135deg,var(--p1),var(--p2));color:#fff}
+.panel{display:none}.panel.active{display:block}
+.hero{border-radius:26px;padding:20px;color:#fff;background:linear-gradient(135deg,var(--p1),var(--p2));box-shadow:0 18px 40px rgba(123,104,238,.27)}
+.hero small{opacity:.86}.hero h2{font-size:22px;margin:6px 0 4px}.hero .date{opacity:.88;font-size:13px}
+.units{display:grid;grid-template-columns:repeat(4,1fr);gap:7px;margin-top:14px}
+.unit{padding:10px 4px;text-align:center;border-radius:15px;background:rgba(255,255,255,.16);border:1px solid rgba(255,255,255,.15)}
+.unit b{font-size:20px;display:block}.unit span{font-size:11px;opacity:.85}
+.sec{display:flex;justify-content:space-between;align-items:center;margin:22px 2px 10px}
+.sec h3{margin:0;font-size:18px}.count{font-size:13px;color:var(--muted)}
 .list{display:grid;gap:12px}
-.card{
-  display:grid;grid-template-columns:1fr auto;gap:10px;align-items:center;
-  background:var(--card);border:1px solid var(--line);border-radius:21px;padding:17px;box-shadow:var(--shadow)
-}
+.card{background:var(--card);border:1px solid var(--line);border-radius:21px;padding:16px;box-shadow:var(--shadow)}
+.card-head{display:flex;justify-content:space-between;gap:10px;align-items:flex-start}
 .title{font-weight:800;font-size:16px}.meta{font-size:12px;color:var(--muted);margin:5px 0 9px}
 .pills{display:flex;gap:6px;flex-wrap:wrap}
 .pill{background:rgba(123,104,238,.11);color:var(--p1);padding:6px 9px;border-radius:999px;font-weight:800;font-size:12px}
 .pill.done{color:var(--danger);background:rgba(239,102,120,.12)}
-.more{border:0;background:transparent;color:var(--muted);font-size:20px;cursor:pointer}
-.empty{text-align:center;padding:34px 20px;border:1px dashed var(--line);border-radius:21px;color:var(--muted);background:var(--card)}
-.fab{
-  position:fixed;left:50%;transform:translateX(-50%);bottom:max(22px,env(safe-area-inset-bottom));
-  width:min(684px,calc(100% - 36px));border:0;border-radius:20px;padding:16px;
-  color:#fff;font-weight:800;font-size:16px;background:linear-gradient(135deg,var(--p1),var(--p2));
-  box-shadow:0 16px 36px rgba(123,104,238,.3);cursor:pointer
-}
-.backdrop{display:none;position:fixed;inset:0;background:rgba(10,8,14,.48);backdrop-filter:blur(6px);z-index:10;align-items:flex-end;justify-content:center;padding:12px}
+.card-actions{display:flex;gap:8px;margin-top:12px}
+.action-btn{flex:1;border:0;border-radius:13px;padding:10px 12px;font-weight:800;font-size:13px}
+.edit-btn{background:rgba(123,104,238,.11);color:var(--p1)}
+.delete-btn{background:rgba(239,102,120,.11);color:var(--danger)}
+.convert-box{margin-top:12px;background:var(--bg);border:1px solid var(--line);border-radius:15px;padding:11px}
+.convert-tabs{display:grid;grid-template-columns:repeat(5,1fr);gap:5px}
+.conv{border:0;border-radius:10px;padding:8px 2px;background:transparent;color:var(--muted);font-size:11px;font-weight:800}
+.conv.active{background:var(--card);color:var(--p1);box-shadow:0 4px 12px rgba(0,0,0,.06)}
+.convert-result{text-align:center;padding:12px 4px 4px;font-size:14px}
+.convert-result b{font-size:24px;color:var(--p1)}
+.empty{text-align:center;padding:32px 18px;border:1px dashed var(--line);border-radius:21px;color:var(--muted);background:var(--card)}
+.fab{position:fixed;left:50%;transform:translateX(-50%);bottom:max(20px,env(safe-area-inset-bottom));width:min(724px,calc(100% - 32px));border:0;border-radius:19px;padding:15px;color:#fff;font-weight:800;font-size:16px;background:linear-gradient(135deg,var(--p1),var(--p2));box-shadow:0 16px 36px rgba(123,104,238,.3);z-index:9}
+.backdrop{display:none;position:fixed;inset:0;background:rgba(10,8,14,.48);backdrop-filter:blur(6px);z-index:20;align-items:flex-end;justify-content:center;padding:10px}
 .backdrop.show{display:flex}
-.sheet{width:min(720px,100%);max-height:90vh;overflow:auto;background:var(--card);border-radius:28px 28px 22px 22px;padding:20px}
-.sheethead{display:flex;align-items:center;justify-content:space-between;margin-bottom:15px}
+.sheet{width:min(760px,100%);max-height:91vh;overflow:auto;background:var(--card);border-radius:27px 27px 20px 20px;padding:18px}
+.sheethead{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px}
 .sheethead h3{margin:0}.close{width:38px;height:38px;border:0;border-radius:12px;background:var(--bg);color:var(--text);font-size:18px}
-.form{display:grid;gap:14px}label{font-size:13px;font-weight:700;color:var(--muted)}
-input,textarea{
-  width:100%;margin-top:7px;padding:14px;border:1px solid var(--line);border-radius:16px;
-  background:var(--bg);color:var(--text);font:inherit;outline:none
+.form{display:grid;gap:13px}label{font-size:13px;font-weight:700;color:var(--muted)}
+/* iPhone Safari 不放大輸入框：16px */
+input,textarea,select{
+  width:100%;margin-top:7px;padding:14px;border:1px solid var(--line);border-radius:15px;
+  background:var(--bg);color:var(--text);font-size:16px;outline:none
 }
-textarea{min-height:74px;resize:vertical}.row{display:grid;grid-template-columns:1fr 1fr;gap:12px}
-.actions{display:grid;grid-template-columns:1fr 1fr;gap:10px}
-.btn{border:0;border-radius:16px;padding:14px;font-weight:800;cursor:pointer}
-.secondary{background:var(--bg);color:var(--text);border:1px solid var(--line)}
-.primary{background:var(--p1);color:#fff}
-.toast{
-  position:fixed;top:18px;left:50%;transform:translate(-50%,-16px);opacity:0;pointer-events:none;
-  background:var(--text);color:var(--card);padding:10px 15px;border-radius:999px;font-size:13px;transition:.25s;z-index:30
-}
+textarea{min-height:72px;resize:vertical}.row{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.actions{display:grid;grid-template-columns:1fr 1fr;gap:9px}
+.btn{border:0;border-radius:15px;padding:14px;font-weight:800;font-size:15px}
+.secondary{background:var(--bg);color:var(--text);border:1px solid var(--line)}.primary{background:var(--p1);color:#fff}
+.debt-summary{background:linear-gradient(135deg,var(--p1),var(--p2));color:#fff;padding:20px;border-radius:24px;box-shadow:0 18px 40px rgba(123,104,238,.25)}
+.debt-summary .big{font-size:30px;font-weight:900;margin:5px 0}
+.summary-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:7px;margin-top:14px}
+.summary-item{background:rgba(255,255,255,.15);padding:10px;border-radius:14px;text-align:center}
+.summary-item b{display:block;font-size:16px}.summary-item span{font-size:10px;opacity:.85}
+.progress{height:9px;background:rgba(127,127,127,.15);border-radius:99px;overflow:hidden;margin-top:10px}
+.progress > div{height:100%;background:linear-gradient(90deg,var(--green),#77dcaa);border-radius:99px}
+.debt-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:8px;margin-top:10px}
+.debt-stat{background:var(--bg);padding:10px;border-radius:13px;font-size:12px;color:var(--muted)}
+.debt-stat b{display:block;color:var(--text);font-size:15px;margin-top:3px}
+.quickpay{display:flex;gap:7px;margin-top:12px}
+.quickpay button{flex:1;border:0;border-radius:12px;padding:9px;font-weight:800;font-size:12px}
+.paybtn{background:rgba(53,184,116,.13);color:var(--green)}
+.install-note{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:14px;margin-top:12px;color:var(--muted);font-size:13px;line-height:1.55}
+.toast{position:fixed;top:18px;left:50%;transform:translate(-50%,-16px);opacity:0;pointer-events:none;background:var(--text);color:var(--card);padding:10px 15px;border-radius:999px;font-size:13px;transition:.25s;z-index:40}
 .toast.show{opacity:1;transform:translate(-50%,0)}
-@media(max-width:520px){h1{font-size:27px}.row{grid-template-columns:1fr}.hero{border-radius:24px}}
+@media(max-width:520px){h1{font-size:24px}.row{grid-template-columns:1fr}.brand img{width:44px;height:44px}.summary-grid{grid-template-columns:1fr 1fr 1fr}}
 </style>
 </head>
 <body>
 <div class="app">
   <div class="header">
-    <div><h1>倒數日 ⏳</h1><div class="sub">把重要的日子留在眼前</div></div>
+    <div class="brand">
+      <img src="icon-192.png" alt="App圖示">
+      <div><h1>倒數計時</h1><div class="sub">倒數日＋還錢計畫</div></div>
+    </div>
     <button class="icon" id="themeBtn">🌙</button>
   </div>
 
-  <section class="hero">
-    <small>最近的倒數</small>
-    <h2 id="heroTitle">還沒有倒數</h2>
-    <div class="date" id="heroDate">新增第一個重要日子吧</div>
-    <div class="units" id="heroUnits">
-      <div class="unit"><b>0</b><span>天</span></div>
-      <div class="unit"><b>0</b><span>時</span></div>
-      <div class="unit"><b>0</b><span>分</span></div>
-      <div class="unit"><b>0</b><span>秒</span></div>
-    </div>
+  <div class="tabs">
+    <button class="tab active" data-tab="countdown">⏳ 倒數</button>
+    <button class="tab" data-tab="debt">💰 還錢計畫</button>
+  </div>
+
+  <section class="panel active" id="countdownPanel">
+    <section class="hero">
+      <small>最近的倒數</small>
+      <h2 id="heroTitle">還沒有倒數</h2>
+      <div class="date" id="heroDate">新增第一個重要日子吧</div>
+      <div class="units" id="heroUnits"></div>
+    </section>
+    <div class="sec"><h3>我的倒數</h3><div class="count" id="count"></div></div>
+    <div class="list" id="list"></div>
   </section>
 
-  <div class="sec"><h3>我的倒數</h3><div class="count" id="count"></div></div>
-  <div class="list" id="list"></div>
+  <section class="panel" id="debtPanel">
+    <div class="debt-summary">
+      <small>目前總負債</small>
+      <div class="big" id="totalDebt">$0</div>
+      <div class="summary-grid">
+        <div class="summary-item"><b id="totalPaid">$0</b><span>已還</span></div>
+        <div class="summary-item"><b id="totalRemain">$0</b><span>剩餘</span></div>
+        <div class="summary-item"><b id="monthlyTotal">$0</b><span>每月預計</span></div>
+      </div>
+    </div>
+    <div class="install-note">💡 還錢功能設計：每筆負債可以設定「總額、已還、每月還款、下次繳款日」，系統會自動算剩餘金額、進度、預估還清月數，並能快速登記本次還款。</div>
+    <div class="sec"><h3>我的負債</h3><div class="count" id="debtCount"></div></div>
+    <div class="list" id="debtList"></div>
+  </section>
 </div>
 
-<button class="fab" id="add">＋ 新增倒數</button>
+<button class="fab" id="addBtn">＋ 新增倒數</button>
 
-<div class="backdrop" id="modal">
+<div class="backdrop" id="countModal">
   <div class="sheet">
-    <div class="sheethead">
-      <h3 id="modalTitle">新增倒數</h3>
-      <button class="close" id="close">✕</button>
-    </div>
-    <form id="form" class="form">
-      <label>名稱
-        <input id="title" maxlength="40" placeholder="例如：生日、旅行、發薪日" required>
-      </label>
+    <div class="sheethead"><h3 id="countModalTitle">新增倒數</h3><button class="close" data-close="countModal">✕</button></div>
+    <form id="countForm" class="form">
+      <label>名稱<input id="title" maxlength="40" placeholder="例如：生日、旅行、發薪日" required></label>
       <div class="row">
         <label>日期<input id="date" type="date" required></label>
         <label>時間<input id="time" type="time" required></label>
       </div>
-      <label>備註（選填）
-        <textarea id="note" maxlength="120" placeholder="寫下一句提醒"></textarea>
-      </label>
-      <div class="actions">
-        <button class="btn secondary" type="button" id="cancel">取消</button>
-        <button class="btn primary" type="submit">儲存</button>
-      </div>
+      <label>備註（選填）<textarea id="note" maxlength="120" placeholder="寫下一句提醒"></textarea></label>
+      <div class="actions"><button class="btn secondary" type="button" data-close="countModal">取消</button><button class="btn primary" type="submit">儲存</button></div>
     </form>
   </div>
 </div>
+
+<div class="backdrop" id="debtModal">
+  <div class="sheet">
+    <div class="sheethead"><h3 id="debtModalTitle">新增負債</h3><button class="close" data-close="debtModal">✕</button></div>
+    <form id="debtForm" class="form">
+      <label>負債名稱<input id="debtName" maxlength="40" placeholder="例如：信用卡、信貸、朋友借款" required></label>
+      <div class="row">
+        <label>原始負債金額<input id="debtTotal" type="number" min="0" step="1" inputmode="numeric" required></label>
+        <label>目前已還<input id="debtPaid" type="number" min="0" step="1" inputmode="numeric" value="0" required></label>
+      </div>
+      <div class="row">
+        <label>每月預計還款<input id="debtMonthly" type="number" min="0" step="1" inputmode="numeric" value="0"></label>
+        <label>下次繳款日<input id="debtDue" type="date"></label>
+      </div>
+      <label>備註（選填）<textarea id="debtNote" maxlength="120" placeholder="例如：每月 10 號扣款"></textarea></label>
+      <div class="actions"><button class="btn secondary" type="button" data-close="debtModal">取消</button><button class="btn primary" type="submit">儲存</button></div>
+    </form>
+  </div>
+</div>
+
+<div class="backdrop" id="payModal">
+  <div class="sheet">
+    <div class="sheethead"><h3>登記還款</h3><button class="close" data-close="payModal">✕</button></div>
+    <form id="payForm" class="form">
+      <input type="hidden" id="payDebtId">
+      <label>本次還款金額<input id="payAmount" type="number" min="1" step="1" inputmode="numeric" required></label>
+      <label>還款日期<input id="payDate" type="date" required></label>
+      <div class="actions"><button class="btn secondary" type="button" data-close="payModal">取消</button><button class="btn primary" type="submit">確認還款</button></div>
+    </form>
+  </div>
+</div>
+
 <div class="toast" id="toast"></div>
 
 <script>
-const KEY='countdown_events_v1', THEME='countdown_theme_v1';
-let events=JSON.parse(localStorage.getItem(KEY)||'[]'), editId=null;
-const $=s=>document.querySelector(s);
-
-function save(){localStorage.setItem(KEY,JSON.stringify(events))}
-function showToast(t){const e=$('#toast');e.textContent=t;e.classList.add('show');setTimeout(()=>e.classList.remove('show'),1600)}
-function pad(n){return String(n).padStart(2,'0')}
-function diffParts(ts){
-  let d=ts-Date.now(), done=d<=0; d=Math.max(0,d);
-  const days=Math.floor(d/86400000); d%=86400000;
-  const hrs=Math.floor(d/3600000); d%=3600000;
-  const mins=Math.floor(d/60000); d%=60000;
-  const secs=Math.floor(d/1000);
-  return {done,days,hrs,mins,secs};
+const EKEY='countdown_events_v2', DKEY='countdown_debts_v1', THEME='countdown_theme_v1';
+let events=JSON.parse(localStorage.getItem(EKEY)||'[]');
+let debts=JSON.parse(localStorage.getItem(DKEY)||'[]');
+let editId=null, editDebtId=null, currentTab='countdown';
+const $=s=>document.querySelector(s), $$=s=>document.querySelectorAll(s);
+const pad=n=>String(n).padStart(2,'0');
+const money=n=>new Intl.NumberFormat('zh-TW',{style:'currency',currency:'TWD',maximumFractionDigits:0}).format(Number(n)||0);
+function save(){localStorage.setItem(EKEY,JSON.stringify(events));localStorage.setItem(DKEY,JSON.stringify(debts))}
+function toast(t){const e=$('#toast');e.textContent=t;e.classList.add('show');setTimeout(()=>e.classList.remove('show'),1600)}
+function esc(s){return String(s??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]))}
+function diff(ts){let raw=ts-Date.now(),done=raw<=0,d=Math.max(0,raw);const days=Math.floor(d/86400000);d%=86400000;const hrs=Math.floor(d/3600000);d%=3600000;const mins=Math.floor(d/60000);d%=60000;return{done,raw:Math.max(0,raw),days,hrs,mins,secs:Math.floor(d/1000)}}
+function fmtDate(ts){return new Intl.DateTimeFormat('zh-TW',{year:'numeric',month:'long',day:'numeric',weekday:'short',hour:'2-digit',minute:'2-digit'}).format(new Date(ts))}
+function totalUnit(raw,unit){
+  const map={day:86400000,hour:3600000,minute:60000,second:1000};
+  return Math.ceil(raw/map[unit]);
 }
-function fmtDate(ts){
-  return new Intl.DateTimeFormat('zh-TW',{year:'numeric',month:'long',day:'numeric',weekday:'short',hour:'2-digit',minute:'2-digit'}).format(new Date(ts));
+function convLabel(raw,mode,p){
+  if(mode==='normal') return `${p.days} 天 ${pad(p.hrs)} 時 ${pad(p.mins)} 分 ${pad(p.secs)} 秒`;
+  const labels={day:'天',hour:'小時',minute:'分鐘',second:'秒'};
+  return `${totalUnit(raw,mode).toLocaleString()} ${labels[mode]}`;
 }
-function render(){
+function renderCountdown(){
   events.sort((a,b)=>a.ts-b.ts);
   $('#count').textContent=events.length+' 個';
   const list=$('#list');
-  if(!events.length){
-    list.innerHTML='<div class="empty">目前沒有倒數項目<br>按下方按鈕新增第一個吧 ✨</div>';
-  }else{
-    list.innerHTML=events.map(e=>{
-      const p=diffParts(e.ts);
-      const pills=p.done
-        ? '<span class="pill done">已到期</span>'
-        : `<span class="pill">${p.days} 天</span><span class="pill">${pad(p.hrs)} 時</span><span class="pill">${pad(p.mins)} 分</span><span class="pill">${pad(p.secs)} 秒</span>`;
-      return `<div class="card">
-        <div>
-          <div class="title">${escapeHtml(e.title)}</div>
-          <div class="meta">${fmtDate(e.ts)}${e.note?' · '+escapeHtml(e.note):''}</div>
-          <div class="pills">${pills}</div>
+  if(!events.length) list.innerHTML='<div class="empty">目前沒有倒數項目<br>按下方新增第一個吧 ✨</div>';
+  else list.innerHTML=events.map(e=>{
+    const p=diff(e.ts), mode=e.mode||'normal';
+    return `<div class="card">
+      <div class="card-head">
+        <div><div class="title">${esc(e.title)}</div><div class="meta">${fmtDate(e.ts)}${e.note?' · '+esc(e.note):''}</div></div>
+      </div>
+      <div class="pills">${p.done?'<span class="pill done">已到期</span>':`<span class="pill">${p.days} 天</span><span class="pill">${pad(p.hrs)} 時</span><span class="pill">${pad(p.mins)} 分</span><span class="pill">${pad(p.secs)} 秒</span>`}</div>
+      ${p.done?'':`<div class="convert-box">
+        <div class="convert-tabs">
+          ${[['normal','標準'],['day','總天'],['hour','總時'],['minute','總分'],['second','總秒']].map(x=>`<button class="conv ${mode===x[0]?'active':''}" onclick="setMode('${e.id}','${x[0]}')">${x[1]}</button>`).join('')}
         </div>
-        <button class="more" onclick="openMenu('${e.id}')">⋯</button>
-      </div>`;
-    }).join('');
-  }
+        <div class="convert-result">${mode==='normal'?'剩餘 ':`進位後總共剩 `}<b>${esc(convLabel(p.raw,mode,p))}</b></div>
+      </div>`}
+      <div class="card-actions">
+        <button class="action-btn edit-btn" onclick="editCountdown('${e.id}')">✏️ 修改</button>
+        <button class="action-btn delete-btn" onclick="deleteCountdown('${e.id}')">🗑️ 刪除</button>
+      </div>
+    </div>`;
+  }).join('');
   const next=events.find(e=>e.ts>Date.now());
-  if(next){
-    const p=diffParts(next.ts);
-    $('#heroTitle').textContent=next.title;
-    $('#heroDate').textContent=fmtDate(next.ts);
-    $('#heroUnits').innerHTML=[
-      ['天',p.days],['時',pad(p.hrs)],['分',pad(p.mins)],['秒',pad(p.secs)]
-    ].map(x=>`<div class="unit"><b>${x[1]}</b><span>${x[0]}</span></div>`).join('');
-  }else{
-    $('#heroTitle').textContent=events.length?'目前沒有進行中的倒數':'還沒有倒數';
-    $('#heroDate').textContent=events.length?'可以新增下一個重要日子':'新增第一個重要日子吧';
-    $('#heroUnits').innerHTML=['天','時','分','秒'].map(x=>`<div class="unit"><b>0</b><span>${x}</span></div>`).join('');
-  }
+  if(next){const p=diff(next.ts);$('#heroTitle').textContent=next.title;$('#heroDate').textContent=fmtDate(next.ts);$('#heroUnits').innerHTML=[['天',p.days],['時',pad(p.hrs)],['分',pad(p.mins)],['秒',pad(p.secs)]].map(x=>`<div class="unit"><b>${x[1]}</b><span>${x[0]}</span></div>`).join('')}
+  else{$('#heroTitle').textContent=events.length?'目前沒有進行中的倒數':'還沒有倒數';$('#heroDate').textContent=events.length?'可以新增下一個重要日子':'新增第一個重要日子吧';$('#heroUnits').innerHTML=['天','時','分','秒'].map(x=>`<div class="unit"><b>0</b><span>${x}</span></div>`).join('')}
 }
-function escapeHtml(s){return String(s).replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]))}
-function openModal(e=null){
-  editId=e?.id||null;
-  $('#modalTitle').textContent=e?'編輯倒數':'新增倒數';
-  $('#title').value=e?.title||'';
-  $('#note').value=e?.note||'';
+window.setMode=(id,mode)=>{events=events.map(e=>e.id===id?{...e,mode}:e);save();renderCountdown()}
+window.editCountdown=id=>openCountModal(events.find(e=>e.id===id));
+window.deleteCountdown=id=>{const e=events.find(x=>x.id===id);if(confirm(`確定要刪除「${e.title}」嗎？`)){events=events.filter(x=>x.id!==id);save();renderCountdown();toast('已刪除倒數')}}
+function openCountModal(e=null){
+  editId=e?.id||null;$('#countModalTitle').textContent=e?'修改倒數':'新增倒數';
+  $('#title').value=e?.title||'';$('#note').value=e?.note||'';
   const dt=e?new Date(e.ts):new Date(Date.now()+3600000);
   $('#date').value=`${dt.getFullYear()}-${pad(dt.getMonth()+1)}-${pad(dt.getDate())}`;
-  $('#time').value=`${pad(dt.getHours())}:${pad(dt.getMinutes())}`;
-  $('#modal').classList.add('show');
+  $('#time').value=`${pad(dt.getHours())}:${pad(dt.getMinutes())}`;$('#countModal').classList.add('show')
 }
-function closeModal(){ $('#modal').classList.remove('show'); editId=null; }
-window.openMenu=function(id){
-  const e=events.find(x=>x.id===id); if(!e)return;
-  const action=prompt(`「${e.title}」\n輸入 1 編輯\n輸入 2 刪除`);
-  if(action==='1') openModal(e);
-  if(action==='2' && confirm(`確定刪除「${e.title}」？`)){events=events.filter(x=>x.id!==id);save();render();showToast('已刪除')}
+$('#countForm').onsubmit=e=>{e.preventDefault();const ts=new Date($('#date').value+'T'+$('#time').value).getTime();const old=events.find(x=>x.id===editId);const item={id:editId||crypto.randomUUID(),title:$('#title').value.trim(),note:$('#note').value.trim(),ts,mode:old?.mode||'normal'};events=editId?events.map(x=>x.id===editId?item:x):[...events,item];save();closeModal('countModal');renderCountdown();toast(editId?'已修改':'已新增')}
+function renderDebts(){
+  const total=debts.reduce((s,d)=>s+Number(d.total||0),0), paid=debts.reduce((s,d)=>s+Number(d.paid||0),0), remain=Math.max(0,total-paid), monthly=debts.reduce((s,d)=>s+Number(d.monthly||0),0);
+  $('#totalDebt').textContent=money(total);$('#totalPaid').textContent=money(paid);$('#totalRemain').textContent=money(remain);$('#monthlyTotal').textContent=money(monthly);$('#debtCount').textContent=debts.length+' 筆';
+  const el=$('#debtList');
+  if(!debts.length){el.innerHTML='<div class="empty">還沒有負債資料<br>可以先新增一筆還款計畫 💰</div>';return}
+  el.innerHTML=debts.map(d=>{
+    const remain=Math.max(0,Number(d.total)-Number(d.paid)), pct=d.total?Math.min(100,Math.max(0,Number(d.paid)/Number(d.total)*100)):0;
+    const months=d.monthly>0?Math.ceil(remain/Number(d.monthly)):null;
+    return `<div class="card">
+      <div class="card-head"><div><div class="title">${esc(d.name)}</div><div class="meta">${d.due?'下次繳款：'+d.due:''}${d.note?' · '+esc(d.note):''}</div></div><span class="pill">${pct.toFixed(0)}%</span></div>
+      <div class="progress"><div style="width:${pct}%"></div></div>
+      <div class="debt-grid">
+        <div class="debt-stat">原始負債<b>${money(d.total)}</b></div>
+        <div class="debt-stat">目前剩餘<b>${money(remain)}</b></div>
+        <div class="debt-stat">每月預計<b>${money(d.monthly)}</b></div>
+        <div class="debt-stat">預估還清<b>${months===null?'未設定':months+' 個月'}</b></div>
+      </div>
+      <div class="quickpay"><button class="paybtn" onclick="openPay('${d.id}')">💸 登記還款</button></div>
+      <div class="card-actions"><button class="action-btn edit-btn" onclick="editDebt('${d.id}')">✏️ 修改</button><button class="action-btn delete-btn" onclick="deleteDebt('${d.id}')">🗑️ 刪除</button></div>
+    </div>`;
+  }).join('')
 }
-$('#add').onclick=()=>openModal();
-$('#close').onclick=closeModal; $('#cancel').onclick=closeModal;
-$('#modal').onclick=e=>{if(e.target.id==='modal') closeModal()};
-$('#form').onsubmit=e=>{
-  e.preventDefault();
-  const ts=new Date($('#date').value+'T'+$('#time').value).getTime();
-  if(!Number.isFinite(ts)) return;
-  const item={id:editId||crypto.randomUUID(),title:$('#title').value.trim(),note:$('#note').value.trim(),ts};
-  if(editId) events=events.map(x=>x.id===editId?item:x); else events.push(item);
-  save();closeModal();render();showToast(editId?'已更新':'已新增');
+function openDebtModal(d=null){
+  editDebtId=d?.id||null;$('#debtModalTitle').textContent=d?'修改負債':'新增負債';
+  $('#debtName').value=d?.name||'';$('#debtTotal').value=d?.total??'';$('#debtPaid').value=d?.paid??0;$('#debtMonthly').value=d?.monthly??0;$('#debtDue').value=d?.due||'';$('#debtNote').value=d?.note||'';$('#debtModal').classList.add('show')
 }
-if(localStorage.getItem(THEME)==='dark') document.body.classList.add('dark');
-function syncThemeIcon(){themeBtn.textContent=document.body.classList.contains('dark')?'☀️':'🌙'}
-const themeBtn=$('#themeBtn'); syncThemeIcon();
-themeBtn.onclick=()=>{
-  document.body.classList.toggle('dark');
-  localStorage.setItem(THEME,document.body.classList.contains('dark')?'dark':'light');
-  syncThemeIcon();
-}
-render();
-setInterval(render,1000);
+window.editDebt=id=>openDebtModal(debts.find(d=>d.id===id));
+window.deleteDebt=id=>{const d=debts.find(x=>x.id===id);if(confirm(`確定要刪除「${d.name}」嗎？`)){debts=debts.filter(x=>x.id!==id);save();renderDebts();toast('已刪除負債')}}
+$('#debtForm').onsubmit=e=>{e.preventDefault();let total=Number($('#debtTotal').value),paid=Number($('#debtPaid').value);if(paid>total)paid=total;const item={id:editDebtId||crypto.randomUUID(),name:$('#debtName').value.trim(),total,paid,monthly:Number($('#debtMonthly').value||0),due:$('#debtDue').value,note:$('#debtNote').value.trim()};debts=editDebtId?debts.map(x=>x.id===editDebtId?item:x):[...debts,item];save();closeModal('debtModal');renderDebts();toast(editDebtId?'已修改':'已新增')}
+window.openPay=id=>{const d=debts.find(x=>x.id===id);$('#payDebtId').value=id;$('#payAmount').value=d.monthly||'';const n=new Date();$('#payDate').value=`${n.getFullYear()}-${pad(n.getMonth()+1)}-${pad(n.getDate())}`;$('#payModal').classList.add('show')}
+$('#payForm').onsubmit=e=>{e.preventDefault();const id=$('#payDebtId').value,amt=Number($('#payAmount').value);debts=debts.map(d=>d.id===id?{...d,paid:Math.min(Number(d.total),Number(d.paid)+amt)}:d);save();closeModal('payModal');renderDebts();toast('已登記還款')}
+function closeModal(id){$('#'+id).classList.remove('show');if(id==='countModal')editId=null;if(id==='debtModal')editDebtId=null}
+$$('[data-close]').forEach(b=>b.onclick=()=>closeModal(b.dataset.close));
+$$('.backdrop').forEach(m=>m.onclick=e=>{if(e.target===m)closeModal(m.id)});
+$$('.tab').forEach(t=>t.onclick=()=>{currentTab=t.dataset.tab;$$('.tab').forEach(x=>x.classList.toggle('active',x===t));$('#countdownPanel').classList.toggle('active',currentTab==='countdown');$('#debtPanel').classList.toggle('active',currentTab==='debt');$('#addBtn').textContent=currentTab==='countdown'?'＋ 新增倒數':'＋ 新增負債'});
+$('#addBtn').onclick=()=>currentTab==='countdown'?openCountModal():openDebtModal();
+if(localStorage.getItem(THEME)==='dark')document.body.classList.add('dark');
+const themeBtn=$('#themeBtn');function syncTheme(){themeBtn.textContent=document.body.classList.contains('dark')?'☀️':'🌙'}syncTheme();themeBtn.onclick=()=>{document.body.classList.toggle('dark');localStorage.setItem(THEME,document.body.classList.contains('dark')?'dark':'light');syncTheme()}
+renderCountdown();renderDebts();setInterval(renderCountdown,1000);
+if('serviceWorker' in navigator)navigator.serviceWorker.register('./service-worker.js').catch(()=>{});
 </script>
 </body>
 </html>
