@@ -3,8 +3,8 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,viewport-fit=cover">
-<meta name="theme-color" content="#7b68ee">
-<title>倒數計時＋還錢計畫</title>
+<meta name="theme-color" content="#8b75ee">
+<title>倒數計時＋還錢倒數</title>
 <link rel="manifest" href="manifest.json">
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
 <meta name="apple-mobile-web-app-capable" content="yes">
@@ -12,105 +12,152 @@
 <meta name="apple-mobile-web-app-title" content="倒數計時">
 <style>
 :root{
-  --bg:#f7f5fb;--card:#fff;--text:#211d2c;--muted:#8b8498;
-  --p1:#7b68ee;--p2:#aa98ff;--line:#ece8f2;--danger:#ef6678;
-  --green:#35b874;--orange:#f0a13a;--shadow:0 14px 35px rgba(73,57,119,.12)
+  --bg:#faf7fb;--card:#fff;--text:#2a2230;--muted:#8e8494;
+  --p1:#8b75ee;--p2:#c096f4;--pink:#ff9fbd;--line:#eee7f0;--danger:#eb6474;
+  --green:#38b977;--shadow:0 14px 35px rgba(91,70,125,.11)
 }
 body.dark{
-  --bg:#14121a;--card:#201d29;--text:#f7f4ff;--muted:#aaa4b7;
-  --p1:#9b8cff;--p2:#7567d8;--line:#332f3d;--shadow:0 14px 35px rgba(0,0,0,.28)
+  --bg:#151219;--card:#211d27;--text:#f8f3fb;--muted:#aaa2ae;
+  --p1:#a491ff;--p2:#8c74d8;--line:#332d39;--shadow:0 14px 35px rgba(0,0,0,.28)
 }
 *{box-sizing:border-box}
 html{-webkit-text-size-adjust:100%}
 body{
-  margin:0;background:radial-gradient(circle at top right,rgba(169,149,255,.22),transparent 26%),var(--bg);
-  color:var(--text);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang TC","Noto Sans TC",sans-serif;
-  min-height:100vh;transition:.25s
+  margin:0;min-height:100vh;
+  background:
+    radial-gradient(circle at 88% 4%,rgba(255,181,209,.26),transparent 24%),
+    radial-gradient(circle at 8% 0%,rgba(190,166,255,.24),transparent 24%),
+    var(--bg);
+  color:var(--text);
+  font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang TC","Noto Sans TC",sans-serif
 }
 button,input,textarea,select{font-family:inherit}
-.app{max-width:760px;margin:auto;padding:20px 16px 110px}
+.app{max-width:760px;margin:auto;padding:20px 16px 112px}
 .header{display:flex;justify-content:space-between;align-items:center;margin-bottom:14px}
-.brand{display:flex;align-items:center;gap:12px}
-.brand img{width:48px;height:48px;border-radius:14px;box-shadow:var(--shadow)}
-h1{font-size:27px;margin:0}.sub{color:var(--muted);font-size:13px;margin-top:3px}
-.icon{width:44px;height:44px;border:0;border-radius:15px;background:var(--card);box-shadow:var(--shadow);font-size:20px;color:var(--text)}
-.tabs{display:grid;grid-template-columns:1fr 1fr;gap:8px;background:var(--card);padding:6px;border:1px solid var(--line);border-radius:17px;margin-bottom:16px}
-.tab{border:0;background:transparent;color:var(--muted);padding:10px;border-radius:12px;font-weight:800;font-size:14px}
-.tab.active{background:linear-gradient(135deg,var(--p1),var(--p2));color:#fff}
+.brand{display:flex;gap:12px;align-items:center}
+.brand img{width:50px;height:50px;border-radius:15px;box-shadow:var(--shadow)}
+h1{font-size:26px;margin:0}.sub{font-size:13px;color:var(--muted);margin-top:3px}
+.icon{width:44px;height:44px;border:0;border-radius:15px;background:var(--card);color:var(--text);box-shadow:var(--shadow);font-size:20px}
+.tabs{display:grid;grid-template-columns:1fr 1fr;gap:7px;padding:6px;border-radius:18px;border:1px solid var(--line);background:var(--card);margin-bottom:15px}
+.tab{border:0;background:transparent;color:var(--muted);padding:11px 8px;border-radius:13px;font-weight:800}
+.tab.active{background:linear-gradient(135deg,var(--p1),var(--p2));color:white}
 .panel{display:none}.panel.active{display:block}
-.hero{border-radius:26px;padding:20px;color:#fff;background:linear-gradient(135deg,var(--p1),var(--p2));box-shadow:0 18px 40px rgba(123,104,238,.27)}
-.hero small{opacity:.86}.hero h2{font-size:22px;margin:6px 0 4px}.hero .date{opacity:.88;font-size:13px}
+.hero{
+  border-radius:26px;padding:20px;color:#fff;
+  background:linear-gradient(135deg,var(--p1),var(--p2));
+  box-shadow:0 18px 40px rgba(139,117,238,.25)
+}
+.hero small{opacity:.87}.hero h2{font-size:22px;margin:6px 0 4px}.hero .date{font-size:13px;opacity:.88}
 .units{display:grid;grid-template-columns:repeat(4,1fr);gap:7px;margin-top:14px}
-.unit{padding:10px 4px;text-align:center;border-radius:15px;background:rgba(255,255,255,.16);border:1px solid rgba(255,255,255,.15)}
-.unit b{font-size:20px;display:block}.unit span{font-size:11px;opacity:.85}
+.unit{background:rgba(255,255,255,.16);border:1px solid rgba(255,255,255,.14);border-radius:15px;text-align:center;padding:10px 3px}
+.unit b{display:block;font-size:20px}.unit span{font-size:11px;opacity:.86}
 .sec{display:flex;justify-content:space-between;align-items:center;margin:22px 2px 10px}
 .sec h3{margin:0;font-size:18px}.count{font-size:13px;color:var(--muted)}
 .list{display:grid;gap:12px}
 .card{background:var(--card);border:1px solid var(--line);border-radius:21px;padding:16px;box-shadow:var(--shadow)}
-.card-head{display:flex;justify-content:space-between;gap:10px;align-items:flex-start}
-.title{font-weight:800;font-size:16px}.meta{font-size:12px;color:var(--muted);margin:5px 0 9px}
-.pills{display:flex;gap:6px;flex-wrap:wrap}
-.pill{background:rgba(123,104,238,.11);color:var(--p1);padding:6px 9px;border-radius:999px;font-weight:800;font-size:12px}
-.pill.done{color:var(--danger);background:rgba(239,102,120,.12)}
+.title{font-weight:850;font-size:16px}.meta{font-size:12px;color:var(--muted);margin:5px 0 9px}
+.pills{display:flex;flex-wrap:wrap;gap:6px}
+.pill{padding:6px 9px;border-radius:999px;background:rgba(139,117,238,.11);color:var(--p1);font-size:12px;font-weight:800}
+.pill.done{background:rgba(235,100,116,.11);color:var(--danger)}
 .card-actions{display:flex;gap:8px;margin-top:12px}
 .action-btn{flex:1;border:0;border-radius:13px;padding:10px 12px;font-weight:800;font-size:13px}
-.edit-btn{background:rgba(123,104,238,.11);color:var(--p1)}
-.delete-btn{background:rgba(239,102,120,.11);color:var(--danger)}
-.convert-box{margin-top:12px;background:var(--bg);border:1px solid var(--line);border-radius:15px;padding:11px}
+.edit-btn{background:rgba(139,117,238,.11);color:var(--p1)}
+.delete-btn{background:rgba(235,100,116,.11);color:var(--danger)}
+.convert-box{margin-top:12px;border:1px solid var(--line);border-radius:15px;background:var(--bg);padding:10px}
 .convert-tabs{display:grid;grid-template-columns:repeat(5,1fr);gap:5px}
-.conv{border:0;border-radius:10px;padding:8px 2px;background:transparent;color:var(--muted);font-size:11px;font-weight:800}
+.conv{border:0;background:transparent;border-radius:10px;padding:8px 2px;color:var(--muted);font-size:11px;font-weight:800}
 .conv.active{background:var(--card);color:var(--p1);box-shadow:0 4px 12px rgba(0,0,0,.06)}
-.convert-result{text-align:center;padding:12px 4px 4px;font-size:14px}
-.convert-result b{font-size:24px;color:var(--p1)}
-.empty{text-align:center;padding:32px 18px;border:1px dashed var(--line);border-radius:21px;color:var(--muted);background:var(--card)}
-.fab{position:fixed;left:50%;transform:translateX(-50%);bottom:max(20px,env(safe-area-inset-bottom));width:min(724px,calc(100% - 32px));border:0;border-radius:19px;padding:15px;color:#fff;font-weight:800;font-size:16px;background:linear-gradient(135deg,var(--p1),var(--p2));box-shadow:0 16px 36px rgba(123,104,238,.3);z-index:9}
-.backdrop{display:none;position:fixed;inset:0;background:rgba(10,8,14,.48);backdrop-filter:blur(6px);z-index:20;align-items:flex-end;justify-content:center;padding:10px}
+.convert-result{text-align:center;padding:11px 3px 3px;font-size:14px}
+.convert-result b{font-size:22px;color:var(--p1)}
+.empty{background:var(--card);border:1px dashed var(--line);border-radius:20px;text-align:center;color:var(--muted);padding:32px 18px}
+.fab{
+  position:fixed;left:50%;transform:translateX(-50%);bottom:max(20px,env(safe-area-inset-bottom));
+  width:min(724px,calc(100% - 32px));border:0;border-radius:19px;padding:15px;
+  color:#fff;font-size:16px;font-weight:850;z-index:9;
+  background:linear-gradient(135deg,var(--p1),var(--p2));box-shadow:0 16px 36px rgba(139,117,238,.28)
+}
+.backdrop{display:none;position:fixed;inset:0;background:rgba(12,9,15,.48);backdrop-filter:blur(6px);z-index:20;align-items:flex-end;justify-content:center;padding:10px}
 .backdrop.show{display:flex}
 .sheet{width:min(760px,100%);max-height:91vh;overflow:auto;background:var(--card);border-radius:27px 27px 20px 20px;padding:18px}
 .sheethead{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px}
 .sheethead h3{margin:0}.close{width:38px;height:38px;border:0;border-radius:12px;background:var(--bg);color:var(--text);font-size:18px}
 .form{display:grid;gap:13px}label{font-size:13px;font-weight:700;color:var(--muted)}
-/* iPhone Safari 不放大輸入框：16px */
 input,textarea,select{
   width:100%;margin-top:7px;padding:14px;border:1px solid var(--line);border-radius:15px;
   background:var(--bg);color:var(--text);font-size:16px;outline:none
 }
-textarea{min-height:72px;resize:vertical}.row{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+textarea{min-height:70px;resize:vertical}
+.row{display:grid;grid-template-columns:1fr 1fr;gap:10px}
 .actions{display:grid;grid-template-columns:1fr 1fr;gap:9px}
-.btn{border:0;border-radius:15px;padding:14px;font-weight:800;font-size:15px}
+.btn{border:0;border-radius:15px;padding:14px;font-size:15px;font-weight:800}
 .secondary{background:var(--bg);color:var(--text);border:1px solid var(--line)}.primary{background:var(--p1);color:#fff}
-.debt-summary{background:linear-gradient(135deg,var(--p1),var(--p2));color:#fff;padding:20px;border-radius:24px;box-shadow:0 18px 40px rgba(123,104,238,.25)}
-.debt-summary .big{font-size:30px;font-weight:900;margin:5px 0}
-.summary-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:7px;margin-top:14px}
-.summary-item{background:rgba(255,255,255,.15);padding:10px;border-radius:14px;text-align:center}
-.summary-item b{display:block;font-size:16px}.summary-item span{font-size:10px;opacity:.85}
-.progress{height:9px;background:rgba(127,127,127,.15);border-radius:99px;overflow:hidden;margin-top:10px}
-.progress > div{height:100%;background:linear-gradient(90deg,var(--green),#77dcaa);border-radius:99px}
-.debt-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:8px;margin-top:10px}
-.debt-stat{background:var(--bg);padding:10px;border-radius:13px;font-size:12px;color:var(--muted)}
-.debt-stat b{display:block;color:var(--text);font-size:15px;margin-top:3px}
-.quickpay{display:flex;gap:7px;margin-top:12px}
-.quickpay button{flex:1;border:0;border-radius:12px;padding:9px;font-weight:800;font-size:12px}
-.paybtn{background:rgba(53,184,116,.13);color:var(--green)}
-.install-note{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:14px;margin-top:12px;color:var(--muted);font-size:13px;line-height:1.55}
+
+/* repayment countdown */
+.repay-card{
+  background:linear-gradient(160deg,#fff8fb,var(--card) 45%,var(--card));
+  border:1px solid var(--line);border-radius:22px;padding:16px;box-shadow:var(--shadow)
+}
+body.dark .repay-card{background:var(--card)}
+.repay-head{display:flex;justify-content:space-between;gap:8px;align-items:flex-start}
+.money-big{font-size:26px;font-weight:900;color:var(--p1);margin-top:3px}
+.progress{height:9px;background:rgba(127,127,127,.14);border-radius:99px;overflow:hidden;margin:12px 0}
+.progress>div{height:100%;background:linear-gradient(90deg,var(--pink),var(--p1));border-radius:99px}
+.target-time{padding:10px 12px;border-radius:14px;background:var(--bg);font-size:12px;color:var(--muted);margin-bottom:10px}
+.pay-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.pay-unit{
+  border:1px solid var(--line);background:var(--bg);border-radius:15px;padding:11px
+}
+.pay-unit span{display:block;color:var(--muted);font-size:11px}
+.pay-unit b{display:block;margin-top:4px;font-size:16px}
+.pay-unit em{display:block;margin-top:2px;font-style:normal;color:var(--p1);font-size:12px;font-weight:800}
+.repay-summary{
+  border-radius:24px;padding:19px;color:#fff;
+  background:linear-gradient(135deg,#ff9fbd,#9a83ef);
+  box-shadow:0 18px 40px rgba(154,131,239,.2)
+}
+.repay-summary .big{font-size:29px;font-weight:900;margin:5px 0}
+.summary-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:7px;margin-top:12px}
+.summary-item{background:rgba(255,255,255,.15);padding:9px;border-radius:13px;text-align:center}
+.summary-item b{display:block;font-size:15px}.summary-item span{font-size:10px;opacity:.86}
+.hint{margin-top:12px;padding:13px;border-radius:17px;border:1px solid var(--line);background:var(--card);color:var(--muted);font-size:13px;line-height:1.55}
+.paynow{width:100%;border:0;border-radius:13px;padding:10px;background:rgba(56,185,119,.12);color:var(--green);font-weight:850;margin-top:11px}
+
+.schedule-box{
+  margin-top:12px;padding:13px;border-radius:16px;background:var(--bg);border:1px solid var(--line)
+}
+.schedule-row{display:flex;justify-content:space-between;gap:10px;align-items:center;margin:6px 0}
+.schedule-row span{font-size:12px;color:var(--muted)}
+.schedule-row b{font-size:13px;text-align:right}
+.status-good{color:var(--green)!important}
+.status-bad{color:var(--danger)!important}
+.status-neutral{color:var(--p1)!important}
+.rate-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:10px}
+.rate-item{background:var(--card);border:1px solid var(--line);border-radius:13px;padding:9px}
+.rate-item span{display:block;color:var(--muted);font-size:10px}
+.rate-item b{display:block;margin-top:3px;font-size:14px}
+.resetbtn{
+  width:100%;border:1px solid var(--line);border-radius:13px;padding:10px;
+  background:var(--bg);color:var(--p1);font-weight:850;margin-top:8px
+}
+
 .toast{position:fixed;top:18px;left:50%;transform:translate(-50%,-16px);opacity:0;pointer-events:none;background:var(--text);color:var(--card);padding:10px 15px;border-radius:999px;font-size:13px;transition:.25s;z-index:40}
 .toast.show{opacity:1;transform:translate(-50%,0)}
-@media(max-width:520px){h1{font-size:24px}.row{grid-template-columns:1fr}.brand img{width:44px;height:44px}.summary-grid{grid-template-columns:1fr 1fr 1fr}}
+@media(max-width:520px){h1{font-size:23px}.row{grid-template-columns:1fr}.brand img{width:45px;height:45px}.pay-grid{grid-template-columns:1fr 1fr}}
 </style>
 </head>
 <body>
 <div class="app">
   <div class="header">
     <div class="brand">
-      <img src="icon-192.png" alt="App圖示">
-      <div><h1>倒數計時</h1><div class="sub">倒數日＋還錢計畫</div></div>
+      <img src="icon-192.png" alt="App 圖示">
+      <div><h1>倒數計時</h1><div class="sub">重要日子＋還錢倒數</div></div>
     </div>
     <button class="icon" id="themeBtn">🌙</button>
   </div>
 
   <div class="tabs">
     <button class="tab active" data-tab="countdown">⏳ 倒數</button>
-    <button class="tab" data-tab="debt">💰 還錢計畫</button>
+    <button class="tab" data-tab="repay">💗 還錢倒數</button>
   </div>
 
   <section class="panel active" id="countdownPanel">
@@ -124,19 +171,19 @@ textarea{min-height:72px;resize:vertical}.row{display:grid;grid-template-columns
     <div class="list" id="list"></div>
   </section>
 
-  <section class="panel" id="debtPanel">
-    <div class="debt-summary">
-      <small>目前總負債</small>
-      <div class="big" id="totalDebt">$0</div>
+  <section class="panel" id="repayPanel">
+    <div class="repay-summary">
+      <small>所有還錢倒數剩餘</small>
+      <div class="big" id="repayRemain">$0</div>
       <div class="summary-grid">
-        <div class="summary-item"><b id="totalPaid">$0</b><span>已還</span></div>
-        <div class="summary-item"><b id="totalRemain">$0</b><span>剩餘</span></div>
-        <div class="summary-item"><b id="monthlyTotal">$0</b><span>每月預計</span></div>
+        <div class="summary-item"><b id="repayTarget">$0</b><span>目標總額</span></div>
+        <div class="summary-item"><b id="repayPaid">$0</b><span>已還</span></div>
+        <div class="summary-item"><b id="repayPlans">0</b><span>計畫數</span></div>
       </div>
     </div>
-    <div class="install-note">💡 還錢功能設計：每筆負債可以設定「總額、已還、每月還款、下次繳款日」，系統會自動算剩餘金額、進度、預估還清月數，並能快速登記本次還款。</div>
-    <div class="sec"><h3>我的負債</h3><div class="count" id="debtCount"></div></div>
-    <div class="list" id="debtList"></div>
+    <div class="hint">💡 建立或重置時，系統會固定一次還款速度。之後不會因為你晚還或早還而改變速度，只會顯示你目前「還到哪個時間」、領先或逾期多少，以及差多少金額。</div>
+    <div class="sec"><h3>我的還錢倒數</h3><div class="count" id="repayCount"></div></div>
+    <div class="list" id="repayList"></div>
   </section>
 </div>
 
@@ -146,7 +193,7 @@ textarea{min-height:72px;resize:vertical}.row{display:grid;grid-template-columns
   <div class="sheet">
     <div class="sheethead"><h3 id="countModalTitle">新增倒數</h3><button class="close" data-close="countModal">✕</button></div>
     <form id="countForm" class="form">
-      <label>名稱<input id="title" maxlength="40" placeholder="例如：生日、旅行、發薪日" required></label>
+      <label>名稱<input id="title" maxlength="40" placeholder="例如：還款期限、生日、旅行" required></label>
       <div class="row">
         <label>日期<input id="date" type="date" required></label>
         <label>時間<input id="time" type="time" required></label>
@@ -157,33 +204,31 @@ textarea{min-height:72px;resize:vertical}.row{display:grid;grid-template-columns
   </div>
 </div>
 
-<div class="backdrop" id="debtModal">
+<div class="backdrop" id="repayModal">
   <div class="sheet">
-    <div class="sheethead"><h3 id="debtModalTitle">新增負債</h3><button class="close" data-close="debtModal">✕</button></div>
-    <form id="debtForm" class="form">
-      <label>負債名稱<input id="debtName" maxlength="40" placeholder="例如：信用卡、信貸、朋友借款" required></label>
+    <div class="sheethead"><h3 id="repayModalTitle">新增還錢倒數</h3><button class="close" data-close="repayModal">✕</button></div>
+    <form id="repayForm" class="form">
+      <label>計畫名稱<input id="repayName" maxlength="40" placeholder="例如：30 天還 3 萬" required></label>
+      <label>綁定倒數
+        <select id="repayEvent" required></select>
+      </label>
       <div class="row">
-        <label>原始負債金額<input id="debtTotal" type="number" min="0" step="1" inputmode="numeric" required></label>
-        <label>目前已還<input id="debtPaid" type="number" min="0" step="1" inputmode="numeric" value="0" required></label>
+        <label>要還的總金額<input id="repayTotal" type="number" min="1" step="1" inputmode="numeric" required></label>
+        <label>目前已還<input id="repayPaidInput" type="number" min="0" step="1" inputmode="numeric" value="0" required></label>
       </div>
-      <div class="row">
-        <label>每月預計還款<input id="debtMonthly" type="number" min="0" step="1" inputmode="numeric" value="0"></label>
-        <label>下次繳款日<input id="debtDue" type="date"></label>
-      </div>
-      <label>備註（選填）<textarea id="debtNote" maxlength="120" placeholder="例如：每月 10 號扣款"></textarea></label>
-      <div class="actions"><button class="btn secondary" type="button" data-close="debtModal">取消</button><button class="btn primary" type="submit">儲存</button></div>
+      <label>備註（選填）<textarea id="repayNote" maxlength="120" placeholder="例如：每天晚上存入還款帳戶"></textarea></label>
+      <div class="actions"><button class="btn secondary" type="button" data-close="repayModal">取消</button><button class="btn primary" type="submit">儲存</button></div>
     </form>
   </div>
 </div>
 
 <div class="backdrop" id="payModal">
   <div class="sheet">
-    <div class="sheethead"><h3>登記還款</h3><button class="close" data-close="payModal">✕</button></div>
+    <div class="sheethead"><h3>更新已還進度</h3><button class="close" data-close="payModal">✕</button></div>
     <form id="payForm" class="form">
-      <input type="hidden" id="payDebtId">
-      <label>本次還款金額<input id="payAmount" type="number" min="1" step="1" inputmode="numeric" required></label>
-      <label>還款日期<input id="payDate" type="date" required></label>
-      <div class="actions"><button class="btn secondary" type="button" data-close="payModal">取消</button><button class="btn primary" type="submit">確認還款</button></div>
+      <input id="payPlanId" type="hidden">
+      <label>目前總共已還多少<input id="payAmount" type="number" min="1" step="1" inputmode="numeric" required></label>
+      <div class="actions"><button class="btn secondary" type="button" data-close="payModal">取消</button><button class="btn primary" type="submit">更新</button></div>
     </form>
   </div>
 </div>
@@ -191,22 +236,19 @@ textarea{min-height:72px;resize:vertical}.row{display:grid;grid-template-columns
 <div class="toast" id="toast"></div>
 
 <script>
-const EKEY='countdown_events_v2', DKEY='countdown_debts_v1', THEME='countdown_theme_v1';
-let events=JSON.parse(localStorage.getItem(EKEY)||'[]');
-let debts=JSON.parse(localStorage.getItem(DKEY)||'[]');
-let editId=null, editDebtId=null, currentTab='countdown';
+const EKEY='countdown_events_v3', RKEY='countdown_repay_v1', THEME='countdown_theme_v1';
+let events=JSON.parse(localStorage.getItem(EKEY)||localStorage.getItem('countdown_events_v2')||'[]');
+let plans=JSON.parse(localStorage.getItem(RKEY)||'[]');
+let editId=null, editPlanId=null, currentTab='countdown';
 const $=s=>document.querySelector(s), $$=s=>document.querySelectorAll(s);
 const pad=n=>String(n).padStart(2,'0');
-const money=n=>new Intl.NumberFormat('zh-TW',{style:'currency',currency:'TWD',maximumFractionDigits:0}).format(Number(n)||0);
-function save(){localStorage.setItem(EKEY,JSON.stringify(events));localStorage.setItem(DKEY,JSON.stringify(debts))}
+const money=n=>new Intl.NumberFormat('zh-TW',{style:'currency',currency:'TWD',maximumFractionDigits:2}).format(Number(n)||0);
+function save(){localStorage.setItem(EKEY,JSON.stringify(events));localStorage.setItem(RKEY,JSON.stringify(plans))}
 function toast(t){const e=$('#toast');e.textContent=t;e.classList.add('show');setTimeout(()=>e.classList.remove('show'),1600)}
 function esc(s){return String(s??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]))}
 function diff(ts){let raw=ts-Date.now(),done=raw<=0,d=Math.max(0,raw);const days=Math.floor(d/86400000);d%=86400000;const hrs=Math.floor(d/3600000);d%=3600000;const mins=Math.floor(d/60000);d%=60000;return{done,raw:Math.max(0,raw),days,hrs,mins,secs:Math.floor(d/1000)}}
 function fmtDate(ts){return new Intl.DateTimeFormat('zh-TW',{year:'numeric',month:'long',day:'numeric',weekday:'short',hour:'2-digit',minute:'2-digit'}).format(new Date(ts))}
-function totalUnit(raw,unit){
-  const map={day:86400000,hour:3600000,minute:60000,second:1000};
-  return Math.ceil(raw/map[unit]);
-}
+function totalUnit(raw,unit){return Math.ceil(raw/{day:86400000,hour:3600000,minute:60000,second:1000}[unit])}
 function convLabel(raw,mode,p){
   if(mode==='normal') return `${p.days} 天 ${pad(p.hrs)} 時 ${pad(p.mins)} 分 ${pad(p.secs)} 秒`;
   const labels={day:'天',hour:'小時',minute:'分鐘',second:'秒'};
@@ -216,80 +258,314 @@ function renderCountdown(){
   events.sort((a,b)=>a.ts-b.ts);
   $('#count').textContent=events.length+' 個';
   const list=$('#list');
-  if(!events.length) list.innerHTML='<div class="empty">目前沒有倒數項目<br>按下方新增第一個吧 ✨</div>';
+  if(!events.length) list.innerHTML='<div class="empty">目前沒有倒數項目<br>先新增一個日期吧 ✨</div>';
   else list.innerHTML=events.map(e=>{
     const p=diff(e.ts), mode=e.mode||'normal';
     return `<div class="card">
-      <div class="card-head">
-        <div><div class="title">${esc(e.title)}</div><div class="meta">${fmtDate(e.ts)}${e.note?' · '+esc(e.note):''}</div></div>
-      </div>
+      <div class="title">${esc(e.title)}</div>
+      <div class="meta">${fmtDate(e.ts)}${e.note?' · '+esc(e.note):''}</div>
       <div class="pills">${p.done?'<span class="pill done">已到期</span>':`<span class="pill">${p.days} 天</span><span class="pill">${pad(p.hrs)} 時</span><span class="pill">${pad(p.mins)} 分</span><span class="pill">${pad(p.secs)} 秒</span>`}</div>
       ${p.done?'':`<div class="convert-box">
-        <div class="convert-tabs">
-          ${[['normal','標準'],['day','總天'],['hour','總時'],['minute','總分'],['second','總秒']].map(x=>`<button class="conv ${mode===x[0]?'active':''}" onclick="setMode('${e.id}','${x[0]}')">${x[1]}</button>`).join('')}
-        </div>
+        <div class="convert-tabs">${[['normal','標準'],['day','總天'],['hour','總時'],['minute','總分'],['second','總秒']].map(x=>`<button class="conv ${mode===x[0]?'active':''}" onclick="setMode('${e.id}','${x[0]}')">${x[1]}</button>`).join('')}</div>
         <div class="convert-result">${mode==='normal'?'剩餘 ':`進位後總共剩 `}<b>${esc(convLabel(p.raw,mode,p))}</b></div>
       </div>`}
-      <div class="card-actions">
-        <button class="action-btn edit-btn" onclick="editCountdown('${e.id}')">✏️ 修改</button>
-        <button class="action-btn delete-btn" onclick="deleteCountdown('${e.id}')">🗑️ 刪除</button>
-      </div>
+      <div class="card-actions"><button class="action-btn edit-btn" onclick="editCountdown('${e.id}')">✏️ 修改</button><button class="action-btn delete-btn" onclick="deleteCountdown('${e.id}')">🗑️ 刪除</button></div>
     </div>`;
   }).join('');
   const next=events.find(e=>e.ts>Date.now());
   if(next){const p=diff(next.ts);$('#heroTitle').textContent=next.title;$('#heroDate').textContent=fmtDate(next.ts);$('#heroUnits').innerHTML=[['天',p.days],['時',pad(p.hrs)],['分',pad(p.mins)],['秒',pad(p.secs)]].map(x=>`<div class="unit"><b>${x[1]}</b><span>${x[0]}</span></div>`).join('')}
-  else{$('#heroTitle').textContent=events.length?'目前沒有進行中的倒數':'還沒有倒數';$('#heroDate').textContent=events.length?'可以新增下一個重要日子':'新增第一個重要日子吧';$('#heroUnits').innerHTML=['天','時','分','秒'].map(x=>`<div class="unit"><b>0</b><span>${x}</span></div>`).join('')}
+  else{$('#heroTitle').textContent=events.length?'目前沒有進行中的倒數':'還沒有倒數';$('#heroDate').textContent=events.length?'新增下一個重要日期吧':'新增第一個重要日子吧';$('#heroUnits').innerHTML=['天','時','分','秒'].map(x=>`<div class="unit"><b>0</b><span>${x}</span></div>`).join('')}
 }
 window.setMode=(id,mode)=>{events=events.map(e=>e.id===id?{...e,mode}:e);save();renderCountdown()}
 window.editCountdown=id=>openCountModal(events.find(e=>e.id===id));
-window.deleteCountdown=id=>{const e=events.find(x=>x.id===id);if(confirm(`確定要刪除「${e.title}」嗎？`)){events=events.filter(x=>x.id!==id);save();renderCountdown();toast('已刪除倒數')}}
+window.deleteCountdown=id=>{
+  const e=events.find(x=>x.id===id);if(!e)return;
+  const linked=plans.filter(p=>p.eventId===id).length;
+  if(confirm(`確定要刪除「${e.title}」嗎？${linked?`\n這會讓 ${linked} 個還錢計畫失去倒數期限。`:''}`)){
+    events=events.filter(x=>x.id!==id);save();renderCountdown();renderRepay();toast('已刪除倒數')
+  }
+}
 function openCountModal(e=null){
   editId=e?.id||null;$('#countModalTitle').textContent=e?'修改倒數':'新增倒數';
   $('#title').value=e?.title||'';$('#note').value=e?.note||'';
-  const dt=e?new Date(e.ts):new Date(Date.now()+3600000);
+  const dt=e?new Date(e.ts):new Date(Date.now()+86400000);
   $('#date').value=`${dt.getFullYear()}-${pad(dt.getMonth()+1)}-${pad(dt.getDate())}`;
-  $('#time').value=`${pad(dt.getHours())}:${pad(dt.getMinutes())}`;$('#countModal').classList.add('show')
+  $('#time').value=`${pad(dt.getHours())}:${pad(dt.getMinutes())}`;
+  $('#countModal').classList.add('show')
 }
-$('#countForm').onsubmit=e=>{e.preventDefault();const ts=new Date($('#date').value+'T'+$('#time').value).getTime();const old=events.find(x=>x.id===editId);const item={id:editId||crypto.randomUUID(),title:$('#title').value.trim(),note:$('#note').value.trim(),ts,mode:old?.mode||'normal'};events=editId?events.map(x=>x.id===editId?item:x):[...events,item];save();closeModal('countModal');renderCountdown();toast(editId?'已修改':'已新增')}
-function renderDebts(){
-  const total=debts.reduce((s,d)=>s+Number(d.total||0),0), paid=debts.reduce((s,d)=>s+Number(d.paid||0),0), remain=Math.max(0,total-paid), monthly=debts.reduce((s,d)=>s+Number(d.monthly||0),0);
-  $('#totalDebt').textContent=money(total);$('#totalPaid').textContent=money(paid);$('#totalRemain').textContent=money(remain);$('#monthlyTotal').textContent=money(monthly);$('#debtCount').textContent=debts.length+' 筆';
-  const el=$('#debtList');
-  if(!debts.length){el.innerHTML='<div class="empty">還沒有負債資料<br>可以先新增一筆還款計畫 💰</div>';return}
-  el.innerHTML=debts.map(d=>{
-    const remain=Math.max(0,Number(d.total)-Number(d.paid)), pct=d.total?Math.min(100,Math.max(0,Number(d.paid)/Number(d.total)*100)):0;
-    const months=d.monthly>0?Math.ceil(remain/Number(d.monthly)):null;
-    return `<div class="card">
-      <div class="card-head"><div><div class="title">${esc(d.name)}</div><div class="meta">${d.due?'下次繳款：'+d.due:''}${d.note?' · '+esc(d.note):''}</div></div><span class="pill">${pct.toFixed(0)}%</span></div>
-      <div class="progress"><div style="width:${pct}%"></div></div>
-      <div class="debt-grid">
-        <div class="debt-stat">原始負債<b>${money(d.total)}</b></div>
-        <div class="debt-stat">目前剩餘<b>${money(remain)}</b></div>
-        <div class="debt-stat">每月預計<b>${money(d.monthly)}</b></div>
-        <div class="debt-stat">預估還清<b>${months===null?'未設定':months+' 個月'}</b></div>
+$('#countForm').onsubmit=e=>{
+  e.preventDefault();const ts=new Date($('#date').value+'T'+$('#time').value).getTime();const old=events.find(x=>x.id===editId);
+  const item={id:editId||crypto.randomUUID(),title:$('#title').value.trim(),note:$('#note').value.trim(),ts,mode:old?.mode||'normal'};
+  events=editId?events.map(x=>x.id===editId?item:x):[...events,item];save();closeModal('countModal');renderCountdown();renderRepay();toast(editId?'已修改':'已新增')
+}
+
+/* repayment */
+function ensureBaseline(p,event){
+  if(!event) return p;
+  if(p.baselineStart && p.ratePerSec!=null && p.baselinePaid!=null && p.baselineRemaining!=null) return p;
+  const now=Date.now();
+  const remaining=Math.max(0,Number(p.total)-Number(p.paid));
+  const duration=Math.max(1000,event.ts-now);
+  return {
+    ...p,
+    baselineStart:now,
+    baselinePaid:Number(p.paid)||0,
+    baselineRemaining:remaining,
+    baselineDuration:duration,
+    ratePerSec:remaining/(duration/1000)
+  };
+}
+function fmtClock(ts){
+  return new Intl.DateTimeFormat('zh-TW',{month:'2-digit',day:'2-digit',hour:'2-digit',minute:'2-digit',second:'2-digit',hour12:false}).format(new Date(ts));
+}
+function secondsText(sec){
+  sec=Math.max(0,Math.round(sec));
+  if(sec<60) return `${sec} 秒`;
+  const m=Math.floor(sec/60), s=sec%60;
+  if(m<60) return `${m} 分 ${s} 秒`;
+  const h=Math.floor(m/60), mm=m%60;
+  if(h<24) return `${h} 小時 ${mm} 分 ${s} 秒`;
+  const d=Math.floor(h/24), hh=h%24;
+  return `${d} 天 ${hh} 小時 ${mm} 分`;
+}
+function renderRepay(){
+  let changed=false;
+  plans=plans.map(p=>{
+    const event=events.find(e=>e.id===p.eventId);
+    if(!event) return p;
+    const np=ensureBaseline(p,event);
+    if(JSON.stringify(np)!==JSON.stringify(p)) changed=true;
+    return np;
+  });
+  if(changed) save();
+
+  const target=plans.reduce((s,p)=>s+Number(p.total||0),0);
+  const paid=plans.reduce((s,p)=>s+Number(p.paid||0),0);
+  $('#repayTarget').textContent=money(target);
+  $('#repayPaid').textContent=money(paid);
+  $('#repayRemain').textContent=money(Math.max(0,target-paid));
+  $('#repayPlans').textContent=plans.length;
+  $('#repayCount').textContent=plans.length+' 個';
+
+  const el=$('#repayList');
+  if(!plans.length){
+    el.innerHTML='<div class="empty">還沒有還錢倒數<br>先建立一個倒數日期，再新增還款計畫 💗</div>';
+    return;
+  }
+
+  el.innerHTML=plans.map(p=>{
+    const event=events.find(e=>e.id===p.eventId);
+    const remain=Math.max(0,Number(p.total)-Number(p.paid));
+    const pct=p.total?Math.min(100,Math.max(0,Number(p.paid)/Number(p.total)*100)):0;
+
+    if(!event){
+      return `<div class="repay-card">
+        <div class="repay-head"><div><div class="title">${esc(p.name)}</div><div class="meta">⚠️ 綁定的倒數已被刪除</div></div><span class="pill">${pct.toFixed(0)}%</span></div>
+        <div class="money-big">${money(remain)}</div>
+        <div class="progress"><div style="width:${pct}%"></div></div>
+        <div class="card-actions"><button class="action-btn edit-btn" onclick="editPlan('${p.id}')">✏️ 重新設定</button><button class="action-btn delete-btn" onclick="deletePlan('${p.id}')">🗑️ 刪除</button></div>
+      </div>`;
+    }
+
+    p=ensureBaseline(p,event);
+    const now=Date.now();
+    const rate=Math.max(0,Number(p.ratePerSec)||0);
+    const elapsedSec=Math.max(0,(now-Number(p.baselineStart))/1000);
+    const scheduleNeeded=Math.min(Number(p.baselineRemaining), elapsedSec*rate);
+    const scheduledPaid=Number(p.baselinePaid)+scheduleNeeded;
+    const actualPaid=Number(p.paid)||0;
+    const delta=actualPaid-scheduledPaid;
+
+    const coverageSec=rate>0 ? Math.max(0,(actualPaid-Number(p.baselinePaid))/rate) : 0;
+    const paidThrough=Math.min(event.ts, Number(p.baselineStart)+coverageSec*1000);
+
+    let statusHtml='';
+    if(remain<=0){
+      const completedAhead=Math.max(0,(event.ts-now)/1000);
+      statusHtml=`<div class="schedule-row"><span>狀態</span><b class="status-good">✅ 已全部還清${completedAhead>1?`，提前 ${secondsText(completedAhead)}`:''}</b></div>`;
+    }else if(now>=event.ts){
+      statusHtml=`<div class="schedule-row"><span>狀態</span><b class="status-bad">⚠️ 已超過截止時間，尚差 ${money(remain)}</b></div>`;
+    }else if(delta < -0.005){
+      const deficit=-delta;
+      const lateSec=rate>0?deficit/rate:0;
+      statusHtml=`
+        <div class="schedule-row"><span>目前進度</span><b class="status-bad">逾期 ${secondsText(lateSec)}</b></div>
+        <div class="schedule-row"><span>目前差額</span><b class="status-bad">${money(deficit)}</b></div>
+        <div class="schedule-row"><span>實際已還到</span><b>${fmtClock(paidThrough)}</b></div>`;
+    }else if(delta > 0.005){
+      const aheadSec=rate>0?delta/rate:0;
+      statusHtml=`
+        <div class="schedule-row"><span>目前進度</span><b class="status-good">領先 ${secondsText(aheadSec)}</b></div>
+        <div class="schedule-row"><span>已經還到</span><b class="status-good">${fmtClock(paidThrough)}</b></div>
+        <div class="schedule-row"><span>領先金額</span><b class="status-good">${money(delta)}</b></div>`;
+    }else{
+      statusHtml=`
+        <div class="schedule-row"><span>目前進度</span><b class="status-neutral">準時</b></div>
+        <div class="schedule-row"><span>目前還到</span><b>${fmtClock(paidThrough)}</b></div>`;
+    }
+
+    const d=diff(event.ts);
+    return `<div class="repay-card">
+      <div class="repay-head">
+        <div>
+          <div class="title">${esc(p.name)}</div>
+          <div class="meta">綁定：${esc(event.title)} · ${fmtDate(event.ts)}</div>
+        </div>
+        <span class="pill">${pct.toFixed(0)}%</span>
       </div>
-      <div class="quickpay"><button class="paybtn" onclick="openPay('${d.id}')">💸 登記還款</button></div>
-      <div class="card-actions"><button class="action-btn edit-btn" onclick="editDebt('${d.id}')">✏️ 修改</button><button class="action-btn delete-btn" onclick="deleteDebt('${d.id}')">🗑️ 刪除</button></div>
+
+      <div class="money-big">${money(remain)}</div>
+      <div class="meta">目前剩餘金額${p.note?' · '+esc(p.note):''}</div>
+      <div class="progress"><div style="width:${pct}%"></div></div>
+
+      <div class="target-time">${d.done?'⏰ 倒數已到期':`⏳ 剩 ${d.days} 天 ${pad(d.hrs)} 時 ${pad(d.mins)} 分 ${pad(d.secs)} 秒`}</div>
+
+      <div class="schedule-box">
+        ${statusHtml}
+        <div class="schedule-row"><span>理論目前應還</span><b>${money(Math.min(Number(p.total),scheduledPaid))}</b></div>
+        <div class="schedule-row"><span>實際已還</span><b>${money(actualPaid)}</b></div>
+
+        <div class="rate-grid">
+          <div class="rate-item"><span>固定每天</span><b>${money(rate*86400)}</b></div>
+          <div class="rate-item"><span>固定每小時</span><b>${money(rate*3600)}</b></div>
+          <div class="rate-item"><span>固定每分鐘</span><b>${money(rate*60)}</b></div>
+          <div class="rate-item"><span>固定每秒</span><b>${money(rate)}</b></div>
+        </div>
+      </div>
+
+      <button class="paynow" onclick="openPay('${p.id}')">💸 更新目前已還金額</button>
+      <button class="resetbtn" onclick="resetPlan('${p.id}')">🔄 以目前剩餘金額重置進度</button>
+
+      <div class="card-actions">
+        <button class="action-btn edit-btn" onclick="editPlan('${p.id}')">✏️ 修改</button>
+        <button class="action-btn delete-btn" onclick="deletePlan('${p.id}')">🗑️ 刪除</button>
+      </div>
     </div>`;
-  }).join('')
+  }).join('');
 }
-function openDebtModal(d=null){
-  editDebtId=d?.id||null;$('#debtModalTitle').textContent=d?'修改負債':'新增負債';
-  $('#debtName').value=d?.name||'';$('#debtTotal').value=d?.total??'';$('#debtPaid').value=d?.paid??0;$('#debtMonthly').value=d?.monthly??0;$('#debtDue').value=d?.due||'';$('#debtNote').value=d?.note||'';$('#debtModal').classList.add('show')
+
+function fillEventSelect(selected=''){
+  const sel=$('#repayEvent');
+  const active=events.filter(e=>e.ts>Date.now()).sort((a,b)=>a.ts-b.ts);
+  sel.innerHTML=active.length
+    ? active.map(e=>`<option value="${e.id}" ${selected===e.id?'selected':''}>${esc(e.title)}｜${new Date(e.ts).toLocaleDateString('zh-TW')}</option>`).join('')
+    : '<option value="">請先建立一個尚未到期的倒數</option>';
 }
-window.editDebt=id=>openDebtModal(debts.find(d=>d.id===id));
-window.deleteDebt=id=>{const d=debts.find(x=>x.id===id);if(confirm(`確定要刪除「${d.name}」嗎？`)){debts=debts.filter(x=>x.id!==id);save();renderDebts();toast('已刪除負債')}}
-$('#debtForm').onsubmit=e=>{e.preventDefault();let total=Number($('#debtTotal').value),paid=Number($('#debtPaid').value);if(paid>total)paid=total;const item={id:editDebtId||crypto.randomUUID(),name:$('#debtName').value.trim(),total,paid,monthly:Number($('#debtMonthly').value||0),due:$('#debtDue').value,note:$('#debtNote').value.trim()};debts=editDebtId?debts.map(x=>x.id===editDebtId?item:x):[...debts,item];save();closeModal('debtModal');renderDebts();toast(editDebtId?'已修改':'已新增')}
-window.openPay=id=>{const d=debts.find(x=>x.id===id);$('#payDebtId').value=id;$('#payAmount').value=d.monthly||'';const n=new Date();$('#payDate').value=`${n.getFullYear()}-${pad(n.getMonth()+1)}-${pad(n.getDate())}`;$('#payModal').classList.add('show')}
-$('#payForm').onsubmit=e=>{e.preventDefault();const id=$('#payDebtId').value,amt=Number($('#payAmount').value);debts=debts.map(d=>d.id===id?{...d,paid:Math.min(Number(d.total),Number(d.paid)+amt)}:d);save();closeModal('payModal');renderDebts();toast('已登記還款')}
-function closeModal(id){$('#'+id).classList.remove('show');if(id==='countModal')editId=null;if(id==='debtModal')editDebtId=null}
+function openRepayModal(p=null){
+  editPlanId=p?.id||null;
+  $('#repayModalTitle').textContent=p?'修改還錢倒數':'新增還錢倒數';
+  $('#repayName').value=p?.name||'';
+  $('#repayTotal').value=p?.total??'';
+  $('#repayPaidInput').value=p?.paid??0;
+  $('#repayNote').value=p?.note||'';
+  fillEventSelect(p?.eventId||'');
+  $('#repayModal').classList.add('show');
+}
+window.editPlan=id=>openRepayModal(plans.find(p=>p.id===id));
+window.deletePlan=id=>{
+  const p=plans.find(x=>x.id===id);
+  if(p&&confirm(`確定刪除「${p.name}」？`)){
+    plans=plans.filter(x=>x.id!==id);
+    save();renderRepay();toast('已刪除還錢計畫')
+  }
+}
+window.resetPlan=id=>{
+  const p=plans.find(x=>x.id===id);
+  if(!p)return;
+  const event=events.find(e=>e.id===p.eventId);
+  if(!event){toast('找不到綁定倒數');return}
+  if(event.ts<=Date.now()){toast('倒數已到期，無法重置');return}
+  const remaining=Math.max(0,Number(p.total)-Number(p.paid));
+  if(confirm(`要用目前剩餘 ${money(remaining)} 重新計算嗎？\n\n重置後會從現在開始重新計算固定的每秒／每分／每時／每天還款速度。`)){
+    const now=Date.now();
+    const duration=Math.max(1000,event.ts-now);
+    plans=plans.map(x=>x.id===id?{
+      ...x,
+      baselineStart:now,
+      baselinePaid:Number(x.paid)||0,
+      baselineRemaining:remaining,
+      baselineDuration:duration,
+      ratePerSec:remaining/(duration/1000)
+    }:x);
+    save();renderRepay();toast('已重新計算還款進度')
+  }
+}
+$('#repayForm').onsubmit=e=>{
+  e.preventDefault();
+  const eventId=$('#repayEvent').value;
+  if(!eventId){toast('請先新增一個倒數');return}
+  const event=events.find(x=>x.id===eventId);
+  let total=Number($('#repayTotal').value),paid=Number($('#repayPaidInput').value);
+  paid=Math.min(total,paid);
+
+  const old=plans.find(x=>x.id===editPlanId);
+  const needsRebase=!old || old.eventId!==eventId || Number(old.total)!==total;
+
+  let item={
+    id:editPlanId||crypto.randomUUID(),
+    name:$('#repayName').value.trim(),
+    eventId,total,paid,
+    note:$('#repayNote').value.trim()
+  };
+
+  if(needsRebase){
+    const now=Date.now();
+    const remaining=Math.max(0,total-paid);
+    const duration=Math.max(1000,event.ts-now);
+    item={
+      ...item,
+      baselineStart:now,
+      baselinePaid:paid,
+      baselineRemaining:remaining,
+      baselineDuration:duration,
+      ratePerSec:remaining/(duration/1000)
+    };
+  }else{
+    item={
+      ...item,
+      baselineStart:old.baselineStart,
+      baselinePaid:old.baselinePaid,
+      baselineRemaining:old.baselineRemaining,
+      baselineDuration:old.baselineDuration,
+      ratePerSec:old.ratePerSec
+    };
+  }
+
+  plans=editPlanId?plans.map(x=>x.id===editPlanId?item:x):[...plans,item];
+  save();closeModal('repayModal');renderRepay();toast(editPlanId?'已修改':'已新增')
+}
+window.openPay=id=>{
+  const p=plans.find(x=>x.id===id);
+  if(!p)return;
+  $('#payPlanId').value=id;
+  $('#payAmount').value=Number(p.paid)||0;
+  $('#payModal').classList.add('show')
+}
+$('#payForm').onsubmit=e=>{
+  e.preventDefault();
+  const id=$('#payPlanId').value;
+  const newPaid=Number($('#payAmount').value);
+  plans=plans.map(p=>p.id===id?{...p,paid:Math.min(Number(p.total),Math.max(0,newPaid))}:p);
+  save();closeModal('payModal');renderRepay();toast('已更新目前已還金額')
+}
+
+function closeModal(id){$('#'+id).classList.remove('show');if(id==='countModal')editId=null;if(id==='repayModal')editPlanId=null}
 $$('[data-close]').forEach(b=>b.onclick=()=>closeModal(b.dataset.close));
 $$('.backdrop').forEach(m=>m.onclick=e=>{if(e.target===m)closeModal(m.id)});
-$$('.tab').forEach(t=>t.onclick=()=>{currentTab=t.dataset.tab;$$('.tab').forEach(x=>x.classList.toggle('active',x===t));$('#countdownPanel').classList.toggle('active',currentTab==='countdown');$('#debtPanel').classList.toggle('active',currentTab==='debt');$('#addBtn').textContent=currentTab==='countdown'?'＋ 新增倒數':'＋ 新增負債'});
-$('#addBtn').onclick=()=>currentTab==='countdown'?openCountModal():openDebtModal();
+$$('.tab').forEach(t=>t.onclick=()=>{
+  currentTab=t.dataset.tab;$$('.tab').forEach(x=>x.classList.toggle('active',x===t));
+  $('#countdownPanel').classList.toggle('active',currentTab==='countdown');
+  $('#repayPanel').classList.toggle('active',currentTab==='repay');
+  $('#addBtn').textContent=currentTab==='countdown'?'＋ 新增倒數':'＋ 新增還錢倒數'
+});
+$('#addBtn').onclick=()=>currentTab==='countdown'?openCountModal():openRepayModal();
+
 if(localStorage.getItem(THEME)==='dark')document.body.classList.add('dark');
-const themeBtn=$('#themeBtn');function syncTheme(){themeBtn.textContent=document.body.classList.contains('dark')?'☀️':'🌙'}syncTheme();themeBtn.onclick=()=>{document.body.classList.toggle('dark');localStorage.setItem(THEME,document.body.classList.contains('dark')?'dark':'light');syncTheme()}
-renderCountdown();renderDebts();setInterval(renderCountdown,1000);
+const themeBtn=$('#themeBtn');function syncTheme(){themeBtn.textContent=document.body.classList.contains('dark')?'☀️':'🌙'}syncTheme();
+themeBtn.onclick=()=>{document.body.classList.toggle('dark');localStorage.setItem(THEME,document.body.classList.contains('dark')?'dark':'light');syncTheme()}
+
+renderCountdown();renderRepay();
+setInterval(()=>{renderCountdown();renderRepay()},1000);
 if('serviceWorker' in navigator)navigator.serviceWorker.register('./service-worker.js').catch(()=>{});
 </script>
 </body>

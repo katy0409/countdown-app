@@ -1,20 +1,22 @@
 {
-  "name": "倒數計時＋還錢計畫",
+  "name": "倒數計時＋還錢倒數",
   "short_name": "倒數計時",
   "start_url": "./",
   "display": "standalone",
-  "background_color": "#f7f5fb",
-  "theme_color": "#7b68ee",
+  "background_color": "#faf7fb",
+  "theme_color": "#8b75ee",
   "icons": [
     {
       "src": "icon-192.png",
       "sizes": "192x192",
-      "type": "image/png"
+      "type": "image/png",
+      "purpose": "any maskable"
     },
     {
       "src": "icon-512.png",
       "sizes": "512x512",
-      "type": "image/png"
+      "type": "image/png",
+      "purpose": "any maskable"
     }
   ]
 }
