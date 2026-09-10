@@ -155,6 +155,18 @@ body.dark .repay-card{background:var(--card)}
 .toast{position:fixed;top:18px;left:50%;transform:translate(-50%,-16px);opacity:0;pointer-events:none;background:var(--text);color:var(--card);padding:10px 15px;border-radius:999px;font-size:13px;transition:.25s;z-index:40}
 .toast.show{opacity:1;transform:translate(-50%,0)}
 @media(max-width:520px){h1{font-size:23px}.row{grid-template-columns:1fr}.brand img{width:45px;height:45px}.pay-grid{grid-template-columns:1fr 1fr}}
+
+/* V5.1: keep every field and action reachable on small screens. */
+.backdrop{inset:auto 0 auto;top:var(--visible-top,0px);height:100vh;height:var(--visible-height,100dvh);padding:10px 10px max(10px,env(safe-area-inset-bottom));overflow:hidden}
+.sheet{max-height:100%;min-height:0;min-width:0;overscroll-behavior:contain;-webkit-overflow-scrolling:touch;scroll-padding-block:16px}
+.form,.form label,.row{min-width:0}
+.row{grid-template-columns:repeat(2,minmax(0,1fr))}
+.form input,.form select,.form textarea{display:block;min-width:0;max-width:100%;box-sizing:border-box}
+.form input[type=date],.form input[type=time],.form input[type=datetime-local]{appearance:none;-webkit-appearance:none;min-height:50px}
+.form input::-webkit-date-and-time-value{text-align:left;min-width:0}
+.sheethead .close{flex-shrink:0}
+body.modal-open{overflow:hidden}
+@media(max-width:520px){.row{grid-template-columns:minmax(0,1fr)}.sheet{padding:16px;border-radius:22px}.form{gap:11px}}
 </style>
 </head>
 <body>
@@ -602,6 +614,23 @@ themeBtn.onclick=()=>{document.body.classList.toggle('dark');localStorage.setIte
 
 renderCountdown();renderRepay();
 setInterval(()=>{renderCountdown();renderRepay()},1000);
+// Follow the visible area when a phone keyboard opens or orientation changes.
+function syncVisibleArea(){
+  const viewport=window.visualViewport;
+  document.documentElement.style.setProperty('--visible-height',(viewport?viewport.height:window.innerHeight)+'px');
+  document.documentElement.style.setProperty('--visible-top',(viewport?viewport.offsetTop:0)+'px');
+}
+syncVisibleArea();
+window.addEventListener('resize',syncVisibleArea);
+if(window.visualViewport){visualViewport.addEventListener('resize',syncVisibleArea);visualViewport.addEventListener('scroll',syncVisibleArea)}
+const modalObserver=new MutationObserver(()=>{
+  document.body.classList.toggle('modal-open',!!document.querySelector('.backdrop.show'));
+  syncVisibleArea();
+});
+document.querySelectorAll('.backdrop').forEach(modal=>modalObserver.observe(modal,{attributes:true,attributeFilter:['class']}));
+document.addEventListener('focusin',event=>{
+  if(event.target.matches('.sheet input,.sheet textarea,.sheet select'))setTimeout(()=>event.target.scrollIntoView({block:'nearest'}),300);
+});
 if('serviceWorker' in navigator)navigator.serviceWorker.register('./service-worker.js').catch(()=>{});
 </script>
 </body>
