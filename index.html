@@ -523,7 +523,9 @@ window.resetPlan=id=>{
   const event=events.find(e=>e.id===p.eventId);
   if(!event){toast('找不到綁定倒數');return}
   if(event.ts<=Date.now()){toast('倒數已到期，無法重置');return}
-  const remaining=Math.max(0,Number(p.total)-Number(p.paid));
+  const paid=paidSum(p);
+  const remaining=Math.max(0,Number(p.total)-paid);
+  if(remaining<=0){toast('這個計畫已經還清，不需要重置');return}
   if(confirm(`要用目前剩餘 ${money(remaining)} 重新計算嗎？\n\n重置後會從現在開始重新計算固定的每秒／每分／每時／每天還款速度。`)){
     const now=Date.now();
     const duration=Math.max(1000,event.ts-now);
